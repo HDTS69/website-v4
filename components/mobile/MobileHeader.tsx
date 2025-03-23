@@ -9,19 +9,8 @@ import { OpenNowIndicator } from '../ui/OpenNowIndicator';
 import { RiveLogo } from '../ui/RiveLogo';
 
 export function MobileHeader() {
-  const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const pathname = usePathname();
   const isHomePage = pathname === '/';
-
-  // Handle scroll effect for header background
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Logo with navigation functionality
   const LogoButton = () => {
@@ -32,17 +21,17 @@ export function MobileHeader() {
           <RiveLogo width={70} height={70} />
         </div>
         
-        {/* Centered Text Logo */}
+        {/* Centered Text Logo - Increased size */}
         <div className="absolute left-1/2 transform -translate-x-1/2 flex justify-center items-center">
           <Image
             src="/images/text-logo.webp"
             alt="HD Trade Services"
-            width={150}
-            height={32}
+            width={200}
+            height={42}
             style={{ objectFit: 'contain' }}
             priority
-            className="max-h-[32px] w-auto"
-            sizes="150px"
+            className="max-h-[42px] w-auto"
+            sizes="200px"
           />
         </div>
       </div>
@@ -94,21 +83,17 @@ export function MobileHeader() {
         </div>
       </div>
       
-      {/* Main Header with Logos */}
+      {/* Main Header with Logos - Fixed with transparent background */}
       <header 
         className={cn(
           "fixed w-full z-50",
-          "transition-all duration-300 ease-in-out",
-          isScrolled 
-            ? "bg-black/90 backdrop-blur-md shadow-lg" 
-            : "bg-gradient-to-b from-black/80 to-transparent backdrop-blur-sm",
           "block md:hidden"
         )}
         style={{ 
           paddingTop: 'calc(env(safe-area-inset-top) + 1.25rem)'
         }}
       >
-        <div className="py-1.5">
+        <div className="py-2">
           <LogoButton />
         </div>
       </header>
