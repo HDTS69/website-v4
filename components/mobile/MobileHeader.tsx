@@ -29,7 +29,7 @@ export function MobileHeader() {
 
   const LogoButton = () => {
     const buttonContent = (
-      <div className="flex flex-col items-center w-full relative">
+      <div className="flex items-center w-full relative">
         {/* Main Logo Section with logos */}
         <div className="w-full flex items-center justify-between px-3 relative">
           {/* Left-aligned Icon Logo */}
@@ -50,14 +50,6 @@ export function MobileHeader() {
               sizes="180px"
             />
           </div>
-        </div>
-
-        {/* Open Now Indicator below logos */}
-        <div className="mt-1 flex justify-center w-full">
-          <OpenNowIndicator 
-            showTime={false}
-            className="text-sm font-medium" 
-          />
         </div>
       </div>
     );
@@ -93,25 +85,48 @@ export function MobileHeader() {
   };
 
   return (
-    <header 
-      className={cn(
-        // Base styles
-        "fixed w-full z-50",
-        // Background and transition
-        "transition-all duration-300 ease-in-out",
-        // Transparent background with blur
-        isScrolled ? "bg-black/80 backdrop-blur-sm shadow-lg" : "bg-transparent backdrop-blur-sm",
-        // Show only on mobile
-        "block md:hidden"
-      )}
-      style={{ 
-        touchAction: 'auto',
-        paddingTop: 'env(safe-area-inset-top)'
-      }}
-    >
-      <div className="py-4">
-        <LogoButton />
+    <>
+      {/* Open Now Indicator above header */}
+      <div 
+        className={cn(
+          "fixed w-full z-[51] flex justify-center",
+          "bg-black/80 backdrop-blur-sm",
+          isScrolled ? "shadow-sm" : "",
+          "block md:hidden",
+          "py-1"
+        )}
+        style={{ 
+          touchAction: 'auto',
+          paddingTop: 'env(safe-area-inset-top)'
+        }}
+      >
+        <OpenNowIndicator 
+          showTime={false}
+          className="text-sm font-medium" 
+        />
       </div>
-    </header>
+      
+      {/* Main header with logos */}
+      <header 
+        className={cn(
+          // Base styles
+          "fixed w-full z-50",
+          // Background and transition
+          "transition-all duration-300 ease-in-out",
+          // Transparent background with blur
+          isScrolled ? "bg-black/80 backdrop-blur-sm shadow-lg" : "bg-transparent backdrop-blur-sm",
+          // Show only on mobile
+          "block md:hidden"
+        )}
+        style={{ 
+          touchAction: 'auto',
+          paddingTop: 'calc(env(safe-area-inset-top) + 1.5rem)' // Add extra padding for the indicator
+        }}
+      >
+        <div className="py-4">
+          <LogoButton />
+        </div>
+      </header>
+    </>
   );
 } 
