@@ -29,8 +29,8 @@ export function MobileHeader() {
 
   const LogoButton = () => {
     const buttonContent = (
-      <div className="flex items-center w-full relative">
-        {/* Main Logo Section with logos and indicator */}
+      <div className="flex flex-col items-center w-full relative">
+        {/* Main Logo Section with logos */}
         <div className="w-full flex items-center justify-between px-3 relative">
           {/* Left-aligned Icon Logo */}
           <div className="flex-shrink-0">
@@ -50,14 +50,14 @@ export function MobileHeader() {
               sizes="180px"
             />
           </div>
-          
-          {/* Right-aligned Open Now Indicator without time */}
-          <div className="flex-shrink-0">
-            <OpenNowIndicator 
-              showTime={false}
-              className="text-sm font-medium" 
-            />
-          </div>
+        </div>
+
+        {/* Open Now Indicator below logos */}
+        <div className="mt-1 flex justify-center w-full">
+          <OpenNowIndicator 
+            showTime={false}
+            className="text-sm font-medium" 
+          />
         </div>
       </div>
     );
@@ -99,8 +99,8 @@ export function MobileHeader() {
         "fixed w-full z-50",
         // Background and transition
         "transition-all duration-300 ease-in-out",
-        // Always show background for consistency
-        "bg-black/90 backdrop-blur-sm shadow-lg",
+        // Transparent background with blur
+        isScrolled ? "bg-black/80 backdrop-blur-sm shadow-lg" : "bg-transparent backdrop-blur-sm",
         // Show only on mobile
         "block md:hidden"
       )}

@@ -13,7 +13,7 @@ export function Hero() {
   const [showBookingForm, setShowBookingForm] = React.useState(false);
 
   return (
-    <div className="relative min-h-[100dvh] flex flex-col bg-black opacity-0 animate-fade-in animation-delay-200 overflow-x-hidden overflow-y-auto pb-24 pt-16 touch-auto">
+    <div className="relative min-h-[100dvh] flex flex-col bg-black opacity-0 animate-fade-in animation-delay-200 overflow-x-hidden overflow-y-auto pb-24 pt-28 touch-auto">
       {/* Sparkles Animation - Reduced particle density for better performance */}
       <div className="absolute inset-0 z-[2] pointer-events-none">
         <SparklesCore
@@ -73,26 +73,34 @@ export function Hero() {
           <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black to-transparent transform-gpu" />
         </div>
       </div>
-      
-      <div className="relative z-[4] container mx-auto px-4 py-0 flex-1">
-        <div className="flex flex-col items-center text-center max-w-3xl mx-auto select-none transform-gpu mt-6 mb-20">
-          {/* Mobile Text Content */}
-          <div className="flex flex-col items-center mt-2 space-y-4">
-            <h1 className="flex flex-col gap-1 text-[2rem] leading-[1.15] font-bold text-white tracking-tight">
-              <span className="opacity-0 animate-fade-in-up animation-delay-300">Brisbane</span>
-              <span className="opacity-0 animate-fade-in-up animation-delay-400 bg-gradient-to-r from-[#00E6CA] to-[#00E6CA]/80 bg-clip-text text-transparent">24/7 Emergency</span>
-              <span className="opacity-0 animate-fade-in-up animation-delay-500">Repairs &amp; Installations</span>
-            </h1>
-            
-            <p className="text-base leading-relaxed opacity-0 animate-fade-in-up animation-delay-600 font-medium bg-black/40 backdrop-blur-sm px-4 py-3 rounded-2xl max-w-[300px] mx-auto">
-              <span className="text-[#00E6CA]">Professional services</span>
-              <span className="block text-white/90 mt-1 whitespace-nowrap text-sm">Plumbing • Gas • Roofing • Air Con</span>
-            </p>
 
-            <div className="opacity-0 animate-fade-in-up animation-delay-700 bg-black/40 backdrop-blur-sm px-4 py-3 rounded-2xl max-w-[280px] mx-auto">
-              <p className="text-white/90 text-sm leading-relaxed">
-                Fast response. Fair pricing.
-                <span className="block font-medium text-[#00E6CA]">Guaranteed satisfaction.</span>
+      {/* Content Container */}
+      <div 
+        className="container mx-auto px-4 py-8 relative z-10"
+      >
+        <div className="flex flex-col items-center min-h-[calc(100vh-220px)] justify-center mt-8">
+          {/* Hero Text */}
+          <div className="flex flex-col items-center max-w-[100%] text-center mb-6">
+            {/* New shadow box to help with visibility */}
+            <div className="bg-black/40 backdrop-blur-sm p-4 rounded-xl mb-4">
+              <h1 className="text-3xl font-bold text-white tracking-tight leading-tight mb-2">
+                <span className="block mb-1 opacity-0 animate-fade-in-up animation-delay-300">
+                  Brisbane
+                </span>
+                <span className="inline-block mb-1 text-[#00E6CA] opacity-0 animate-fade-in-up animation-delay-400">
+                  24/7 Emergency Repairs
+                </span>
+                <span className="block opacity-0 animate-fade-in-up animation-delay-500">
+                  & Installations
+                </span>
+              </h1>
+              
+              <p className="text-base text-gray-300 mb-2 leading-relaxed opacity-0 animate-fade-in-up animation-delay-600 font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
+                Professional plumbing, gas, roofing & air conditioning services.
+              </p>
+              
+              <p className="text-base text-gray-300 mb-4 leading-relaxed opacity-0 animate-fade-in-up animation-delay-650 font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
+                Fast response. Fair pricing. Guaranteed satisfaction.
               </p>
             </div>
 
