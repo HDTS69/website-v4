@@ -42,6 +42,7 @@ export const useFormSubmission = ({
         status: 'pending'
       };
 
+      // Save to Supabase
       const { error: supabaseError } = await supabase
         .from('bookings')
         .insert([supabaseData])
@@ -50,6 +51,27 @@ export const useFormSubmission = ({
 
       if (supabaseError) {
         throw new Error(supabaseError.message || "Failed to submit booking");
+      }
+
+      // Send email notifications
+      const emailResponse = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+          services: formData.services,
+          preferredTime: formData.preferredTime,
+          message: formData.message || '',
+        }),
+      });
+
+      if (!emailResponse.ok) {
+        console.warn('Email notification failed, but booking was saved');
       }
 
       setSubmitStatus('success');
