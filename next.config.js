@@ -14,9 +14,9 @@ const nextConfig = {
     domains: ['maps.googleapis.com', 'localhost'],
   },
   reactStrictMode: true,
-  // Comment out the static export configuration for development
-  // output: 'export',
-  // distDir: 'out',
+  // Enable static export for production
+  output: 'export',
+  distDir: 'out',
   experimental: {
     appDocumentPreloading: false,
   },
