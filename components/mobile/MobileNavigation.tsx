@@ -52,6 +52,49 @@ const customButtonStyles = `
   .hero-buttons-container .call-now-btn:hover {
     box-shadow: 0 0 25px 4px rgba(255, 255, 255, 0.5) !important;
   }
+  
+  /* Only hide the icon logo in the mobile menu popup, but allow the text logo to display */
+  .mobile-menu-popup .rive-logo-container {
+    display: none !important;
+  }
+  
+  /* Create a dedicated space for the text logo */
+  .mobile-menu-popup .logo-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Display the text logo but position it properly */
+  .mobile-menu-popup img[src*="text-logo.webp"] {
+    display: block !important;
+    position: relative !important;
+    max-width: 180px !important;
+    height: auto !important;
+    margin-top: -40px;
+  }
+  
+  /* Create proper spacing for the top of the menu */
+  .mobile-menu-popup {
+    padding-top: env(safe-area-inset-top, 0);
+  }
+  
+  /* Ensure the menu has enough spacing at the top for the header */
+  .mobile-menu-content {
+    margin-top: 130px;
+    padding-top: 0;
+  }
+  
+  /* Add clear separation between logo and menu items */
+  .mobile-menu-navigation {
+    padding-top: 20px;
+  }
 `;
 
 /**
@@ -167,26 +210,27 @@ export function Navigation({ items, actionItems = [], className }: BaseNavigatio
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-black/95 backdrop-blur-sm z-[100] flex flex-col"
+            className="fixed inset-0 bg-black/95 backdrop-blur-sm z-[100] flex flex-col mobile-menu-popup"
             ref={menuRef}
             style={{ touchAction: 'auto' }}
           >
-            <div className="h-full flex flex-col">
-              {/* Header with title only */}
-              <div className="p-5 border-b border-[#00E6CA]/10">
-                <h3 className="text-lg font-semibold text-[#00E6CA]">Menu</h3>
-              </div>
-              
+            {/* Logo area - dedicated space for the HD TRADE SERVICES logo */}
+            <div className="logo-area">
+              {/* Text logo will display here due to CSS rules */}
+            </div>
+            
+            {/* Completely separate container without interfering with logos */}
+            <div className="h-full flex flex-col overflow-hidden mobile-menu-content">              
               {/* Scrollable content */}
               <motion.div 
-                className="flex-1 overflow-y-auto py-4 px-5"
+                className="flex-1 overflow-y-auto px-5 border-t border-[#00E6CA]/10"
                 variants={menuVariants}
                 initial="hidden"
                 animate="visible"
                 exit="exit"
               >
-                {/* Primary Navigation Items */}
-                <div className="space-y-5 mb-8">
+                {/* Primary Navigation Items - without any header */}
+                <div className="space-y-5 mb-8 mobile-menu-navigation pt-8 mt-4 border-t border-[#00E6CA]/10">
                   {navItems.map((item) => (
                     <motion.div variants={itemVariants} key={item.name} className="nav-item">
                       <div className="flex items-center justify-between">

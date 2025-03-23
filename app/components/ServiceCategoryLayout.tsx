@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import { Testimonials } from "@/components/ui/Testimonials";
 import { BookingForm } from "@/components/ui/BookingForm/BookingForm";
 import { GoogleReviews } from "@/components/ui/GoogleReviews";
+import { useEffect } from 'react';
+import Image from 'next/image';
 
 interface ServiceCategoryLayoutProps {
   title: string;
@@ -17,11 +19,49 @@ interface ServiceCategoryLayoutProps {
  * This is used for pages like Plumbing, Gas Fitting, etc.
  */
 export function ServiceCategoryLayout({ title, description, children }: ServiceCategoryLayoutProps) {
+  // Fix Rive animations loading issues
+  useEffect(() => {
+    // Add a fallback timeout for Rive animations
+    const timeoutId = setTimeout(() => {
+      // Find all error elements showing in the console
+      document.querySelectorAll('[data-rive-error="true"]').forEach(el => {
+        el.removeAttribute('data-rive-error');
+      });
+
+      // Replace any stuck Rive logo canvas elements with static images
+      document.querySelectorAll('.rive-logo-container canvas').forEach(canvas => {
+        const parent = canvas.parentElement;
+        if (parent) {
+          // Hide the canvas
+          (canvas as HTMLElement).style.display = 'none';
+          
+          // Add a static fallback image if not already present
+          if (!parent.querySelector('img')) {
+            const img = document.createElement('img');
+            img.src = '/images/icon-logo.webp';
+            img.alt = 'HD Trade Services Logo';
+            img.width = 100;
+            img.height = 100;
+            img.className = 'w-full h-full';
+            parent.appendChild(img);
+          }
+        }
+      });
+    }, 2000);
+
+    return () => clearTimeout(timeoutId);
+  }, []);
+
   return (
     <div className="relative w-full min-h-screen">
       <ClientBackground />
       
-      <div className="relative z-10 max-w-6xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+      <div 
+        className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
+        style={{
+          paddingTop: 'calc(180px + 2rem)'
+        }}
+      >
         {/* Hero Section */}
         <div className="text-center mb-16">
           <div className="relative inline-block">

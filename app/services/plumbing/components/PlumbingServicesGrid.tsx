@@ -219,6 +219,7 @@ export function PlumbingServicesGrid() {
                         src={service.lordIcon}
                         forceTrigger={hoveredCard === service.title}
                         size={64}
+                        fallbackImage="/images/icon-logo.webp"
                       />
                     ) : (
                       <Image 

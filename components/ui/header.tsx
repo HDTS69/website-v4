@@ -71,7 +71,7 @@ export default function Header() {
           </div>
         </motion.div>
       ) : (
-        <div className="h-32 w-full opacity-0"></div>
+        <div className="h-10 w-full opacity-0"></div>
       )}
     </header>
   );

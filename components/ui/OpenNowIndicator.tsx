@@ -41,7 +41,7 @@ export function OpenNowIndicator({ className, showTime = true }: OpenNowIndicato
   }, []);
   
   return (
-    <div className={cn("flex items-center gap-2", className)}>
+    <div className={cn("flex items-center gap-2", className)} style={{ zIndex: 1, position: 'relative' }}>
       <div className="relative flex items-center justify-center">
         {/* Subtle glow effect */}
         <motion.div

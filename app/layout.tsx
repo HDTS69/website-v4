@@ -38,6 +38,8 @@ export default function RootLayout({
               :root {
                 color-scheme: dark;
                 touch-action: manipulation;
+                --mobile-header-height: 180px; /* Default that gets overridden by JS */
+                --header-transition: 0.3s ease-in-out;
               }
               
               html {
@@ -47,6 +49,7 @@ export default function RootLayout({
                 touch-action: manipulation;
                 -ms-content-zooming: none;
                 -ms-touch-action: manipulation;
+                overscroll-behavior: none;
               }
 
               body {
@@ -90,17 +93,66 @@ export default function RootLayout({
               /* Mobile-specific fixes */
               @media (max-width: 767px) {
                 html, body {
-                  position: relative;
-                  height: auto;
+                  position: relative; /* Base position for everything */
+                  height: 100%;
                   min-height: 100%;
-                  overflow-y: auto !important;
-                  overflow-x: hidden;
                   overscroll-behavior: none;
+                  overflow-x: hidden;
                 }
                 
-                /* Fixed elements can cause scrolling issues */
-                .fixed-mobile {
-                  position: absolute;
+                /* Remove fixed header positioning */
+                body.has-fixed-header {
+                  /* Remove padding as we no longer have a fixed header */
+                  padding-top: 0;
+                  transition: none;
+                }
+                
+                /* Remove header-hidden class effects */
+                body.has-fixed-header.header-hidden {
+                  padding-top: 0;
+                }
+                
+                /* Remove fixed positioning for mobile headers */
+                #mobile-open-now, #mobile-main-header {
+                  /* Allow headers to scroll away naturally */
+                  position: absolute !important;
+                  z-index: 50;
+                  transform: none !important;
+                  will-change: auto;
+                  -webkit-backface-visibility: hidden;
+                  backface-visibility: hidden;
+                  transition: none !important;
+                  background: transparent !important;
+                  backdrop-filter: none !important;
+                }
+                
+                /* iOS specific fixes - remove fixed positioning */
+                @supports (-webkit-touch-callout: none) {
+                  html {
+                    height: -webkit-fill-available;
+                  }
+                  
+                  body {
+                    min-height: -webkit-fill-available;
+                  }
+                  
+                  #mobile-open-now, #mobile-main-header {
+                    /* Allow headers to scroll away naturally on iOS */
+                    position: absolute !important;
+                    -webkit-transform: none !important;
+                    -webkit-backface-visibility: hidden;
+                    -webkit-perspective: 1000;
+                    -webkit-font-smoothing: antialiased;
+                    transition: none !important;
+                    background: transparent !important;
+                    backdrop-filter: none !important;
+                  }
+                  
+                  /* Remove transform for hidden state */
+                  body.header-hidden #mobile-open-now,
+                  body.header-hidden #mobile-main-header {
+                    -webkit-transform: none !important;
+                  }
                 }
               }
               
@@ -136,7 +188,7 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="manifest" href="/site.webmanifest" />
       </head>
-      <body className="font-inter antialiased bg-black touch-auto" suppressHydrationWarning>
+      <body className="font-inter antialiased bg-black touch-auto isolate" suppressHydrationWarning>
         <Providers>
           {/* Sparkles background - directly importing client component */}
           <ClientBackground />

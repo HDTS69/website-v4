@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { useRive, Layout, Fit, Alignment } from '@rive-app/react-canvas';
+import { useRive, RuntimeLoader, Layout, Fit, Alignment, useStateMachineInput } from '@rive-app/react-canvas';
 import Image from 'next/image';
 
 interface RiveLogoProps {
@@ -10,20 +10,67 @@ interface RiveLogoProps {
   className?: string;
 }
 
-export function RiveLogo({ width = 100, height = 100, className = '' }: RiveLogoProps) {
+// Create a module-level flag to track if animation has played already across instances
+let hasAnimationPlayedGlobally = false;
+
+// Check localStorage on module load to see if animation has played before
+if (typeof window !== 'undefined') {
+  try {
+    hasAnimationPlayedGlobally = localStorage.getItem('riveLogoAnimationPlayed') === 'true';
+  } catch (e) {
+    console.warn('Could not access localStorage:', e);
+  }
+}
+
+export function RiveLogo({ width = 100, height = 100, className }: RiveLogoProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [animationComplete, setAnimationComplete] = useState(hasAnimationPlayedGlobally);
   const containerRef = useRef<HTMLDivElement>(null);
+  const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Rive logo animation setup
+  // Using the custom logo animation from the /rive folder
   const { RiveComponent, rive } = useRive({
     src: '/rive/icon-logo-animation.riv',
-    autoplay: true,
+    autoplay: !hasAnimationPlayedGlobally, // Only autoplay if animation hasn't played yet
     layout: new Layout({
-      fit: Fit.Contain,
-      alignment: Alignment.Center
+      fit: Fit.Cover,
+      alignment: Alignment.Center,
+      minX: -50,
+      minY: -50,
+      maxX: 150,
+      maxY: 150
     }),
-    onLoad: () => setIsLoaded(true),
+    onLoad: () => {
+      setIsLoaded(true);
+      
+      // If animation has already played globally, mark as complete immediately
+      if (hasAnimationPlayedGlobally) {
+        setAnimationComplete(true);
+      } else {
+        // Set a timeout to stop the animation after it has played once (approximately 2 seconds)
+        animationTimeoutRef.current = setTimeout(() => {
+          setAnimationComplete(true);
+          hasAnimationPlayedGlobally = true; // Mark as played globally
+          
+          // Store animation played state in localStorage
+          try {
+            localStorage.setItem('riveLogoAnimationPlayed', 'true');
+          } catch (e) {
+            console.warn('Could not save animation state to localStorage:', e);
+          }
+          
+          // Attempt to pause the animation
+          if (rive) {
+            try {
+              rive.pause();
+            } catch (e) {
+              console.warn('Could not pause Rive animation', e);
+            }
+          }
+        }, 2000);
+      }
+    },
     onLoadError: (e) => {
       console.error('Rive animation failed to load:', e);
       setHasError(true);
@@ -33,56 +80,92 @@ export function RiveLogo({ width = 100, height = 100, className = '' }: RiveLogo
   // Fallback to static image after timeout if animation doesn't load
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (!isLoaded) setHasError(true);
-    }, 2000);
-    
-    return () => clearTimeout(timer);
+      if (!isLoaded) {
+        setHasError(true);
+      }
+    }, 1500); // Reduced timeout for faster fallback
+
+    return () => {
+      clearTimeout(timer);
+      // Clean up animation timeout
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current);
+      }
+    };
   }, [isLoaded]);
 
-  // Optimize canvas dimensions when Rive loads
+  // Set up the canvas and optimize rendering
   useEffect(() => {
-    if (!rive || !isLoaded || !containerRef.current) return;
-    
-    const canvas = containerRef.current.querySelector('canvas');
-    if (!canvas) return;
-    
-    // Set canvas dimensions
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
-    
-    // Handle pixel ratio for crisp rendering
-    const pixelRatio = window.devicePixelRatio || 1;
-    const scaledWidth = Math.floor(width * pixelRatio);
-    const scaledHeight = Math.floor(height * pixelRatio);
-    
-    if (canvas.width !== scaledWidth || canvas.height !== scaledHeight) {
-      canvas.width = scaledWidth;
-      canvas.height = scaledHeight;
-      rive.resizeToCanvas();
+    if (!rive || !isLoaded) return;
+
+    // Optimize canvas dimensions
+    if (containerRef.current) {
+      const canvas = containerRef.current.querySelector('canvas');
+      if (canvas) {
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        
+        const pixelRatio = window.devicePixelRatio || 1;
+        const scaledWidth = Math.floor(width * pixelRatio);
+        const scaledHeight = Math.floor(height * pixelRatio);
+        
+        if (canvas.width !== scaledWidth || canvas.height !== scaledHeight) {
+          canvas.width = scaledWidth;
+          canvas.height = scaledHeight;
+          rive.resizeToCanvas();
+        }
+      }
     }
-  }, [rive, isLoaded, width, height]);
+    
+    // If animation is complete, ensure it's paused
+    if (animationComplete && rive) {
+      try {
+        rive.pause();
+      } catch (e) {
+        console.warn('Could not pause Rive animation', e);
+      }
+    }
+  }, [rive, isLoaded, width, height, animationComplete]);
+
+  // Use a static image once animation is complete if we're showing Rive
+  const showStaticImageAfterAnimation = animationComplete && isLoaded && !hasError;
 
   return (
     <div 
       ref={containerRef}
-      style={{ width, height }} 
-      className={`relative flex-shrink-0 ${className}`}
-      aria-label="HD Trade Services Logo"
+      style={{ 
+        width, 
+        height,
+        position: 'relative',
+        zIndex: 1 
+      }} 
+      className={`relative flex-shrink-0 rive-logo-container ${className || ''}`}
     >
-      {!hasError ? (
-        <div className="absolute inset-0">
+      {/* Show Rive animation when loaded and animation isn't complete */}
+      {!hasError && !animationComplete && (
+        <div className={`absolute inset-0 transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`} style={{ transform: 'scale(2)' }}>
           <RiveComponent />
         </div>
-      ) : (
+      )}
+      
+      {/* Static image when animation complete or there's an error */}
+      {(hasError || !isLoaded || showStaticImageAfterAnimation) && (
         <Image 
           src="/images/icon-logo.webp" 
           alt="HD Trade Services Icon" 
           width={width}
           height={height}
-          className="h-full w-full"
-          sizes={`${Math.max(width, 70)}px`}
+          className="h-full w-full scale-200"
+          sizes={`${width}px`}
           priority
         />
+      )}
+      
+      {/* Placeholder while loading */}
+      {!isLoaded && !hasError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-full">
+          <div className="w-8 h-8 border-2 border-t-transparent border-[#00E6CA] rounded-full animate-spin"></div>
+        </div>
       )}
     </div>
   );
