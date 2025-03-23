@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { RuntimeLoader } from '@rive-app/react-canvas';
 
 /**
@@ -11,6 +11,7 @@ import { RuntimeLoader } from '@rive-app/react-canvas';
 export function RiveLoader() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Function to clear any stuck Rive animations
   const clearFailedRiveAnimations = () => {
@@ -35,12 +36,10 @@ export function RiveLoader() {
   useEffect(() => {
     // Initialize the Rive runtime
     try {
-      const runtimeInstance = RuntimeLoader.getInstance();
+      const runtimeInstance = RuntimeLoader.getInstance('canvas');
       if (runtimeInstance) {
         runtimeInstance
-          .load({ 
-            // Rive runtime options if needed
-          })
+          .load()
           .then(() => {
             setIsLoaded(true);
             // Clear any previously failed animations
@@ -61,12 +60,10 @@ export function RiveLoader() {
       if (navigator.onLine && hasError) {
         // If we're back online and had errors, try to reload the runtime
         try {
-          const runtimeInstance = RuntimeLoader.getInstance();
+          const runtimeInstance = RuntimeLoader.getInstance('canvas');
           if (runtimeInstance) {
             runtimeInstance
-              .load({ 
-                // Rive runtime options if needed
-              })
+              .load()
               .then(() => {
                 setIsLoaded(true);
                 setHasError(false);
@@ -89,12 +86,10 @@ export function RiveLoader() {
     if (!isLoaded && !hasError) {
       const retryTimer = setTimeout(() => {
         try {
-          const runtimeInstance = RuntimeLoader.getInstance();
+          const runtimeInstance = RuntimeLoader.getInstance('canvas');
           if (runtimeInstance) {
             runtimeInstance
-              .load({ 
-                // Rive runtime options if needed
-              })
+              .load()
               .then(() => {
                 setIsLoaded(true);
                 clearFailedRiveAnimations();
@@ -110,8 +105,12 @@ export function RiveLoader() {
         }
       }, 2000);
 
+      animationTimeoutRef.current = retryTimer;
+
       return () => {
-        clearTimeout(retryTimer);
+        if (animationTimeoutRef.current) {
+          clearTimeout(animationTimeoutRef.current);
+        }
         window.removeEventListener('online', handleNetworkChange);
       };
     }
