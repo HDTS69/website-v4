@@ -15,23 +15,23 @@ export function MobileHeader() {
   // Logo with navigation functionality
   const LogoButton = () => {
     const logoContent = (
-      <div className="flex items-center justify-between w-full px-3">
+      <div className="flex items-center justify-between w-full">
         {/* Left-aligned Icon Logo */}
-        <div className="flex-shrink-0 mr-2">
-          <RiveLogo width={70} height={70} />
+        <div className="flex-shrink-0">
+          <RiveLogo width={60} height={60} />
         </div>
         
-        {/* Centered Text Logo - Increased size */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 flex justify-center items-center">
+        {/* Text Logo - Right aligned */}
+        <div className="flex items-center">
           <Image
             src="/images/text-logo.webp"
             alt="HD Trade Services"
-            width={200}
-            height={42}
+            width={180}
+            height={38}
             style={{ objectFit: 'contain' }}
             priority
-            className="max-h-[42px] w-auto"
-            sizes="200px"
+            className="max-h-[38px] w-auto"
+            sizes="180px"
           />
         </div>
       </div>
@@ -63,38 +63,26 @@ export function MobileHeader() {
 
   return (
     <>
-      {/* Open Now Indicator - Fixed at top */}
-      <div 
-        className={cn(
-          "fixed top-0 left-0 right-0 w-full z-[60]",
-          "bg-black/90 backdrop-blur-sm border-b border-gray-800/40",
-          "block md:hidden"
-        )}
-        style={{ 
-          paddingTop: 'calc(env(safe-area-inset-top) + 2px)',
-          paddingBottom: '2px'
-        }}
-      >
-        <div className="flex justify-center items-center">
-          <OpenNowIndicator 
-            showTime={false}
-            className="text-xs font-medium text-[#00E6CA]" 
-          />
-        </div>
-      </div>
-      
-      {/* Main Header with Logos - Fixed with transparent background */}
+      {/* Main Header - Fully transparent with minimal height */}
       <header 
-        className={cn(
-          "fixed w-full z-50",
-          "block md:hidden"
-        )}
+        className="fixed w-full z-50 block md:hidden"
         style={{ 
-          paddingTop: 'calc(env(safe-area-inset-top) + 1.25rem)'
+          paddingTop: 'calc(env(safe-area-inset-top))'
         }}
       >
-        <div className="py-2">
-          <LogoButton />
+        <div className="flex flex-col">
+          {/* Open Now Indicator - Integrated into header */}
+          <div className="w-full flex justify-center items-center py-1 bg-black/50 backdrop-blur-sm">
+            <OpenNowIndicator 
+              showTime={false}
+              className="text-xs font-medium text-[#00E6CA]" 
+            />
+          </div>
+          
+          {/* Logo section with transparent background */}
+          <div className="py-2 px-3 bg-gradient-to-b from-black/80 to-black/30 backdrop-blur-sm">
+            <LogoButton />
+          </div>
         </div>
       </header>
     </>

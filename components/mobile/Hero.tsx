@@ -10,7 +10,7 @@ export function Hero() {
   const [showBookingForm, setShowBookingForm] = React.useState(false);
 
   return (
-    <div className="relative min-h-[100dvh] flex flex-col bg-black opacity-0 animate-fade-in animation-delay-200 overflow-x-hidden overflow-y-auto pb-16 pt-24 touch-auto">
+    <div className="relative min-h-[100dvh] flex flex-col bg-black opacity-0 animate-fade-in animation-delay-200 overflow-hidden pb-8 pt-20 touch-auto">
       {/* Sparkles Animation */}
       <div className="absolute inset-0 z-[2] pointer-events-none">
         <SparklesCore
@@ -25,18 +25,23 @@ export function Hero() {
       </div>
 
       {/* Content Background Gradient - Helps with text readability */}
-      <div className="absolute top-0 left-0 right-0 h-[50vh] bg-gradient-to-b from-black/70 via-black/40 to-transparent z-[3] pointer-events-none" />
+      <div className="absolute top-0 left-0 right-0 h-[40vh] bg-gradient-to-b from-black/90 via-black/60 to-transparent z-[3] pointer-events-none" />
 
       {/* Main Content Container */}
-      <div className="container mx-auto px-4 flex flex-col h-full relative z-10">
-        {/* Top Hero Content */}
-        <div className="flex-1 flex flex-col justify-center items-center pt-8">
+      <div className="w-full mx-auto flex flex-col h-full relative z-10">
+        {/* Hero Content Section */}
+        <motion.div 
+          className="flex-1 flex flex-col items-center pt-12 px-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           {/* Hero Text Box */}
           <motion.div 
-            className="w-full max-w-md backdrop-blur-sm p-4 rounded-xl mb-6"
-            initial={{ opacity: 0, y: 20 }}
+            className="w-full max-w-md backdrop-blur-sm rounded-xl mb-5"
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
+            transition={{ delay: 0.2, duration: 0.4 }}
           >
             <h1 className="text-4xl font-bold text-white tracking-tight leading-tight mb-3 text-center">
               <span className="block mb-1">Brisbane</span>
@@ -55,10 +60,10 @@ export function Hero() {
 
           {/* Warp Speed Box */}
           <motion.div 
-            className="backdrop-blur-sm px-4 py-3 rounded-2xl max-w-[280px] mx-auto mb-6"
+            className="backdrop-blur-sm px-4 py-3 rounded-2xl max-w-[280px] mx-auto mb-5"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.5 }}
+            transition={{ delay: 0.6, duration: 0.4 }}
           >
             <div className="flex flex-col items-center gap-1">
               <span className="text-white/90 text-sm">Technician to your home at</span>
@@ -68,10 +73,10 @@ export function Hero() {
           
           {/* Book Button */}
           <motion.div 
-            className="mb-8"
+            className="mb-6"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.9, duration: 0.4 }}
+            transition={{ delay: 0.7, duration: 0.4 }}
           >
             <AnimatedButton 
               href="#book"
@@ -91,13 +96,13 @@ export function Hero() {
               Book Online
             </AnimatedButton>
           </motion.div>
-        </div>
+        </motion.div>
         
-        {/* Hero Image */}
-        <div className="w-full relative h-[50vh] mt-auto">
+        {/* Hero Image Section */}
+        <div className="w-full relative h-[45vh]">
           <motion.div 
             className="absolute bottom-0 left-0 w-[70%] h-full"
-            initial={{ y: 100, opacity: 0 }}
+            initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ type: "spring", damping: 20, delay: 0.2 }}
           >
@@ -118,8 +123,8 @@ export function Hero() {
             />
           </motion.div>
           
-          {/* Bottom fade gradient */}
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black to-transparent" />
+          {/* Bottom fade gradient - taller for better transition */}
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent" />
         </div>
       </div>
         
@@ -127,11 +132,11 @@ export function Hero() {
       <AnimatePresence>
         {showBookingForm && (
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
+            exit={{ opacity: 0, y: 30 }}
             transition={{ duration: 0.3 }}
-            className="w-full max-w-md mx-auto mt-4 px-4 mb-8"
+            className="w-full max-w-md mx-auto px-4 my-4"
             id="book"
           >
             <HeroBookingForm />
