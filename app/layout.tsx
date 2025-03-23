@@ -9,7 +9,6 @@ import { cn } from '@/lib/utils';
 import 'swiper/css';
 import { RiveDebug } from '../components/debug/RiveDebug';
 import { RiveDebugInitializer } from '../components/debug/RiveDebugInitializer';
-import { RiveProvider } from '../components/ui/RiveContext';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -139,21 +138,18 @@ export default function RootLayout({
       </head>
       <body className="font-inter antialiased bg-black touch-auto" suppressHydrationWarning>
         <Providers>
-          {/* RiveProvider to manage Rive animation state */}
-          <RiveProvider>
-            {/* Sparkles background - directly importing client component */}
-            <ClientBackground />
-            
-            {/* Main Content Wrapper */}
-            <div className="relative z-10 min-h-screen flex flex-col touch-auto">
-              {children}
-            </div>
-            
-            {/* Debug component with URL-based activation */}
-            {process.env.NODE_ENV === 'development' && (
-              <RiveDebugInitializer />
-            )}
-          </RiveProvider>
+          {/* Sparkles background - directly importing client component */}
+          <ClientBackground />
+          
+          {/* Main Content Wrapper */}
+          <div className="relative z-10 min-h-screen flex flex-col touch-auto">
+            {children}
+          </div>
+          
+          {/* Debug component with URL-based activation */}
+          {process.env.NODE_ENV === 'development' && (
+            <RiveDebugInitializer />
+          )}
         </Providers>
         <ClientComponents />
       </body>

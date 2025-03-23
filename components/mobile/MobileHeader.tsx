@@ -86,24 +86,25 @@ export function MobileHeader() {
 
   return (
     <>
-      {/* Open Now Indicator above header */}
+      {/* Absolute position for Open Now Indicator at the top of the page */}
       <div 
         className={cn(
-          "fixed w-full z-[51] flex justify-center",
-          "bg-black/80 backdrop-blur-sm",
-          isScrolled ? "shadow-sm" : "",
+          "fixed top-0 left-0 right-0 w-full z-[60]", // Higher z-index to ensure it's above the header
+          "bg-black/80 backdrop-blur-sm border-b border-gray-800/40",
           "block md:hidden",
-          "py-1"
+          "py-1 px-4"
         )}
         style={{ 
           touchAction: 'auto',
           paddingTop: 'env(safe-area-inset-top)'
         }}
       >
-        <OpenNowIndicator 
-          showTime={false}
-          className="text-sm font-medium" 
-        />
+        <div className="flex justify-center items-center w-full">
+          <OpenNowIndicator 
+            showTime={false}
+            className="text-sm font-medium" 
+          />
+        </div>
       </div>
       
       {/* Main header with logos */}
@@ -120,7 +121,7 @@ export function MobileHeader() {
         )}
         style={{ 
           touchAction: 'auto',
-          paddingTop: 'calc(env(safe-area-inset-top) + 1.5rem)' // Add extra padding for the indicator
+          paddingTop: 'calc(env(safe-area-inset-top) + 1.75rem)' // Add extra padding for the indicator
         }}
       >
         <div className="py-4">

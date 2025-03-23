@@ -3,10 +3,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRive, RuntimeLoader, Layout, Fit, Alignment, useStateMachineInput } from '@rive-app/react-canvas';
 import Image from 'next/image';
-import { useRiveContext } from './RiveContext';
-
-// Unique identifier for this animation
-const LOGO_ANIMATION_ID = 'icon-logo-animation';
 
 interface RiveLogoProps {
   width?: number;
@@ -18,30 +14,17 @@ export function RiveLogo({ width = 100, height = 100, className }: RiveLogoProps
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const initialLoadRef = useRef(false);
-  const { hasAnimationPlayed, markAnimationPlayed } = useRiveContext();
-  
-  // Check if animation has already played
-  const alreadyPlayed = hasAnimationPlayed(LOGO_ANIMATION_ID);
   
   // Using the custom logo animation from the /rive folder
   const { RiveComponent, rive } = useRive({
     src: '/rive/icon-logo-animation.riv',
-    autoplay: !alreadyPlayed, // Only autoplay if it hasn't played before
+    autoplay: true, // Always animate on initial load
     layout: new Layout({
       fit: Fit.Contain,
       alignment: Alignment.Center
     }),
     onLoad: () => {
       setIsLoaded(true);
-      initialLoadRef.current = true;
-      
-      // If animation already played, make sure we pause it immediately
-      if (rive && alreadyPlayed) {
-        setTimeout(() => {
-          rive.pause();
-        }, 0);
-      }
     },
     onLoadError: (e) => {
       console.error('Rive animation failed to load:', e);
@@ -60,7 +43,7 @@ export function RiveLogo({ width = 100, height = 100, className }: RiveLogoProps
     return () => clearTimeout(timer);
   }, [isLoaded]);
 
-  // Set up the canvas and play animation once on initial load
+  // Set up the canvas and optimize rendering
   useEffect(() => {
     if (!rive || !isLoaded) return;
 
@@ -82,22 +65,7 @@ export function RiveLogo({ width = 100, height = 100, className }: RiveLogoProps
         }
       }
     }
-
-    // Let animation play once for 2 seconds, then pause it
-    if (initialLoadRef.current && !alreadyPlayed) {
-      rive.play();
-      
-      const pauseTimer = setTimeout(() => {
-        rive.pause();
-        markAnimationPlayed(LOGO_ANIMATION_ID);
-      }, 2000); // Play for 2 seconds then freeze
-      
-      return () => clearTimeout(pauseTimer);
-    } else if (alreadyPlayed) {
-      // Ensure already played animations are paused
-      rive.pause();
-    }
-  }, [rive, isLoaded, width, height, alreadyPlayed, markAnimationPlayed]);
+  }, [rive, isLoaded, width, height]);
 
   return (
     <div 
