@@ -1,63 +1,46 @@
-/// <reference path="../types/lord-icon.d.ts" />
 'use client';
 
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
-// Declare the lord-icon element type
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'lord-icon': {
-        src: string;
-        trigger?: string;
-        colors?: string;
-        style?: React.CSSProperties;
-        class?: string;
-        state?: string;
-        target?: string;
-      };
-    }
-  }
-}
+import LordIcon, { LordIconRef } from './LordIcon';
 
 export default function LogoButton() {
   const pathname = usePathname();
   const isHomePage = pathname === '/';
-  const iconRef = useRef<HTMLElement>(null);
+  const iconRef = useRef<LordIconRef>(null);
 
   useEffect(() => {
-    const iconElement = iconRef.current;
-    if (!iconElement) return;
+    if (!iconRef.current) return;
 
     // Play animation once on mount
-    iconElement.setAttribute('trigger', 'loop');
+    iconRef.current.setTrigger('loop');
 
     // Listen for animation completion
     const handleComplete = () => {
-      if (iconElement) {
-        iconElement.setAttribute('trigger', 'none');
+      if (iconRef.current) {
+        iconRef.current.setTrigger('none');
       }
     };
 
-    iconElement.addEventListener('complete', handleComplete, { once: true });
+    const iconElement = iconRef.current.element;
+    if (iconElement) {
+      iconElement.addEventListener('complete', handleComplete, { once: true });
 
-    return () => {
-      if (iconElement) {
+      return () => {
         iconElement.removeEventListener('complete', handleComplete);
-      }
-    };
+      };
+    }
   }, []); // Empty dependency array ensures this only runs once on mount
 
   const buttonContent = (
     <>
-      <lord-icon
+      <LordIcon
         ref={iconRef}
         src="/icons/logo.json"
         trigger="none"
         colors="primary:#ffffff"
-        style={{ width: '48px', height: '48px' }}
+        size={48}
       />
       <span className="text-white text-2xl font-bold ml-2">
         Plumber

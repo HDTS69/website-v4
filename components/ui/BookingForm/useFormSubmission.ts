@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 import supabase from '@/lib/supabase';
-import type { FormData } from './useFormState';
+import type { FormData } from './types';
 
 interface UseFormSubmissionProps {
   formData: FormData;

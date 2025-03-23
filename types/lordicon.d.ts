@@ -8,6 +8,7 @@ declare namespace JSX {
       class?: string;
       state?: string;
       target?: string;
+      ref?: React.RefObject<HTMLElement>;
     }
   }
 } 
