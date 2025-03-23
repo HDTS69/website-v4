@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from "@/lib/utils";
@@ -51,15 +51,15 @@ export function HeroBookingForm() {
   const dateRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
-  const toggleCategory = (category: string) => {
+  const toggleCategory = useCallback((category: string) => {
     setExpandedCategories(prev => ({
       ...prev,
       [category]: !prev[category]
     }));
-  };
+  }, []);
   
   // Handle form field changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     
     if (type === 'checkbox') {
@@ -93,10 +93,10 @@ export function HeroBookingForm() {
         [name]: ''
       }));
     }
-  };
+  }, [errors]);
   
   // Validate form fields
-  const validateField = (name: string, value: string): boolean => {
+  const validateField = useCallback((name: string, value: string): boolean => {
     if (!value.trim()) {
       setErrors(prev => ({
         ...prev,
@@ -105,7 +105,7 @@ export function HeroBookingForm() {
       return false;
     }
     
-    if (name === 'email' && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) {
+    if (name === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
       setErrors(prev => ({
         ...prev,
         [name]: 'Please enter a valid email address'
@@ -113,20 +113,20 @@ export function HeroBookingForm() {
       return false;
     }
     
-    if (name === 'phone' && !/^(?:\+61|0)[2-478](?:[ -]?\d{4}[ -]?\d{4}|\d{8})$/.test(value)) {
+    if (name === 'phone' && !/^(\+?\d{1,3}[- ]?)?\d{8,12}$/.test(value)) {
       setErrors(prev => ({
         ...prev,
-        [name]: 'Please enter a valid Australian phone number'
+        [name]: 'Please enter a valid phone number'
       }));
       return false;
     }
     
     return true;
-  };
+  }, []);
   
-  // Validate the entire form
-  const validateForm = (): boolean => {
-    const requiredFields = ['name', 'phone', 'email', 'address'];
+  // Validate entire form
+  const validateForm = useCallback((): boolean => {
+    const requiredFields = ['name', 'email', 'phone'];
     let isValid = true;
     
     requiredFields.forEach(field => {
@@ -151,27 +151,31 @@ export function HeroBookingForm() {
       isValid = false;
     }
     
+    if (!formData.address && !formData.manualEntry) {
+      setErrors(prev => ({
+        ...prev,
+        address: 'Please enter an address'
+      }));
+      isValid = false;
+    }
+    
     return isValid;
-  };
+  }, [formData, validateField]);
   
   // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setHasAttemptedSubmit(true);
     
-    if (!validateForm() || isSubmitting) {
+    if (!validateForm()) {
       return;
     }
     
     setIsSubmitting(true);
     
     try {
-      // Here you would typically send the form data to your backend
-      // For now, we'll simulate a successful submission
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setSubmitStatus('success');
-      setShowThankYou(true);
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Reset form
       setFormData({
@@ -191,38 +195,41 @@ export function HeroBookingForm() {
         newsletter: true,
         termsAccepted: false,
       });
+      
+      setSubmitStatus('success');
+      setShowThankYou(true);
     } catch (error) {
       console.error('Error submitting form:', error);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [formData, validateForm]);
   
   // Close dropdowns when clicking outside
-  React.useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      const target = event.target as HTMLElement;
-      
-      if (servicesRef.current && !servicesRef.current.contains(target)) {
-        setShowServices(false);
-      }
-      if (timeRef.current && !timeRef.current.contains(target)) {
-        setShowTime(false);
-      }
-      if (urgencyRef.current && !urgencyRef.current.contains(target)) {
-        setShowUrgency(false);
-      }
-      if (dateRef.current && !dateRef.current.contains(target)) {
-        setShowDate(false);
-      }
-    }
+  const handleClickOutside = useCallback(function handleClickOutside(event: MouseEvent) {
+    const target = event.target as HTMLElement;
     
+    if (servicesRef.current && !servicesRef.current.contains(target)) {
+      setShowServices(false);
+    }
+    if (timeRef.current && !timeRef.current.contains(target)) {
+      setShowTime(false);
+    }
+    if (urgencyRef.current && !urgencyRef.current.contains(target)) {
+      setShowUrgency(false);
+    }
+    if (dateRef.current && !dateRef.current.contains(target)) {
+      setShowDate(false);
+    }
+  }, []);
+  
+  React.useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [handleClickOutside]);
   
   // Thank-you screen
   if (showThankYou) {

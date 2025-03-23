@@ -13,7 +13,7 @@ export function Hero() {
 
   return (
     <div 
-      className="relative min-h-[100dvh] flex flex-col bg-black opacity-0 animate-fade-in animation-delay-200 overflow-x-hidden overflow-y-auto pb-20 touch-auto"
+      className="relative min-h-[100dvh] flex flex-col bg-black overflow-x-hidden overflow-y-auto pb-20 touch-auto"
       style={{ 
         paddingTop: '180px' // Restored spacing to match previous header height
       }}
@@ -64,9 +64,7 @@ export function Hero() {
                     filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.5))'
                   }}
                   className="select-none optimize-performance"
-                  priority
-                  quality={90}
-                  loading="eager"
+                  {...getImageLoadingProps(ImagePriority.CRITICAL)}
                   draggable="false"
                 />
               </div>
@@ -99,51 +97,85 @@ export function Hero() {
                 </span>
               </h1>
               
-              <p className="text-base text-gray-300 mb-2 leading-relaxed opacity-0 animate-fade-in-up animation-delay-600 font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
-                Professional plumbing, gas, roofing & air conditioning services.
-              </p>
-              
-              <p className="text-base text-gray-300 mb-4 leading-relaxed opacity-0 animate-fade-in-up animation-delay-650 font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
-                Fast response. Fair pricing. Guaranteed satisfaction.
+              <p className="text-base text-gray-300 mb-3 leading-relaxed font-medium opacity-0 animate-fade-in-up animation-delay-600">
+                Professional plumbing, gas, roofing & air conditioning services at fair prices.
               </p>
             </div>
-            
-            <div className="opacity-0 animate-scale-up animation-delay-900 transform-gpu mt-5">
-              <AnimatedButton 
-                href="#book"
-                variant="primary"
-                className="shadow-lg hover:shadow-xl hover:shadow-[#00E6CA]/20 text-white"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowBookingForm(true);
-                  setTimeout(() => {
-                    const bookingForm = document.getElementById('book');
-                    if (bookingForm) {
-                      bookingForm.scrollIntoView({ behavior: 'smooth' });
-                    }
-                  }, 100);
+
+            {/* "Warp Speed" text */}
+            <div className="text-lg text-gray-300 mb-3 leading-relaxed flex items-center justify-center gap-1 opacity-0 animate-fade-in-up animation-delay-650 px-4">
+              <span>We can have a technician at your door at</span>
+              <Cover className="text-[#00E6CA] font-semibold">
+                warp speed
+              </Cover>
+            </div>
+
+            {/* Star Review Component */}
+            <div className="px-6 py-3 bg-black/70 backdrop-blur-sm rounded-lg mb-6 transform-gpu opacity-0 animate-scale-up animation-delay-700">
+              <div className="flex items-center justify-center">
+                <div className="flex">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <svg
+                      key={star}
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 text-yellow-400"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                      />
+                    </svg>
+                  ))}
+                </div>
+                <span className="ml-2 text-white text-sm font-medium">
+                  4.9 (2,842+ Reviews)
+                </span>
+              </div>
+            </div>
+
+            {/* Book Now Button - Only show when booking form is hidden */}
+            {!showBookingForm && (
+              <div className="w-full px-4 opacity-0 animate-fade-in-up animation-delay-750">
+                <AnimatedButton
+                  href="#"
+                  onClick={() => setShowBookingForm(true)}
+                  className="w-full justify-center py-4 animate-glow"
+                >
+                  Book Now
+                </AnimatedButton>
+              </div>
+            )}
+          </div>
+
+          {/* Booking Form - Conditional rendering */}
+          <AnimatePresence mode="wait">
+            {showBookingForm && (
+              <motion.div
+                className="w-full px-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ 
+                  opacity: 1, 
+                  y: 0,
+                  transition: {
+                    type: "spring",
+                    damping: 20,
+                    stiffness: 100
+                  }
+                }}
+                exit={{ 
+                  opacity: 0, 
+                  y: 20,
+                  transition: {
+                    duration: 0.2
+                  }
                 }}
               >
-                Book Online
-              </AnimatedButton>
-            </div>
-          </div>
+                <HeroBookingForm />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-        
-        {/* Booking Form */}
-        <AnimatePresence>
-          {showBookingForm && (
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 50 }}
-              transition={{ duration: 0.3 }}
-              className="w-full max-w-md mx-auto mb-12"
-            >
-              <HeroBookingForm />
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </div>
   );

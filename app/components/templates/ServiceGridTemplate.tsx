@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 import LordIcon from '@/app/components/LordIcon';
+import { getImageLoadingProps, ImagePriority } from '@/utils/imageLoading';
 
 interface Service {
   title: string;
@@ -72,7 +73,8 @@ export function ServiceGridTemplate() {
                     alt={service.title}
                     width={64}
                     height={64}
-                    className="transition-transform duration-300 group-hover:scale-110"
+                    className="transition-transform duration-300 group-hover:scale-110 optimize-performance"
+                    {...getImageLoadingProps(ImagePriority.LOW)}
                   />
                 )}
               </div>

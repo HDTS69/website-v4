@@ -12,6 +12,9 @@ const nextConfig = {
     // Only use unoptimized images for static export
     unoptimized: process.env.NODE_ENV === 'production',
     domains: ['maps.googleapis.com', 'localhost'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    formats: ['image/webp', 'image/avif'],
   },
   reactStrictMode: true,
   // Enable static export for production only
@@ -57,6 +60,34 @@ const nextConfig = {
           }
         ],
       },
+      {
+        // Add cache control for images
+        source: '/images/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          }
+        ],
+      },
+      {
+        // Add specific hero image optimization
+        source: '/images/hayden-hero-1.webp',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+          {
+            key: 'Priority',
+            value: 'high',
+          }
+        ],
+      }
     ];
   },
   // Configure webpack
@@ -70,6 +101,18 @@ const nextConfig = {
         crypto: false,
       };
     }
+    
+    // Enable WebAssembly for Rive animations
+    config.experiments = {
+      ...config.experiments,
+      asyncWebAssembly: true,
+    };
+    
+    // Add rule for .wasm files
+    config.module.rules.push({
+      test: /\.wasm$/,
+      type: 'asset/resource',
+    });
 
     return config;
   },

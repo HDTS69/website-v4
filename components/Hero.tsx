@@ -37,7 +37,7 @@ export function Hero() {
       className="
         relative min-h-[100dvh]
         flex items-center justify-center
-        bg-black opacity-0 animate-fade-in animation-delay-200
+        bg-black
         overflow-x-hidden overflow-y-auto
       "
     >
@@ -71,8 +71,6 @@ export function Hero() {
                   src="/images/hayden-hero-1.webp"
                   alt="Professional Technician"
                   fill
-                  priority
-                  loading="eager"
                   sizes="(max-width: 768px) 100vw, 35vw"
                   style={{ 
                     objectFit: 'contain', 
@@ -80,8 +78,7 @@ export function Hero() {
                     filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.5))'
                   }}
                   className="select-none optimize-performance"
-                  quality={90}
-                  fetchPriority="high"
+                  {...getImageLoadingProps(ImagePriority.CRITICAL)}
                 />
               </div>
             </motion.div>
@@ -100,7 +97,7 @@ export function Hero() {
         >
           {/* Left Spacer (for the absolute-positioned image) */}
           <div className="col-span-3 hidden md:block" />
-
+          
           {/* Text Column */}
           <div
             className="
@@ -195,9 +192,9 @@ export function Hero() {
           <motion.div
             className="col-span-12 md:col-span-4 w-full"
             initial={{ x: '100vw', opacity: 0 }}
-            animate={{
+            animate={{ 
               x: 0,
-              opacity: 1,
+              opacity: 1, 
               transition: {
                 type: 'spring',
                 damping: 20,

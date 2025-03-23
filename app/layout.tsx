@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import 'swiper/css';
 import { RiveDebug } from '../components/debug/RiveDebug';
 import { RiveDebugInitializer } from '../components/debug/RiveDebugInitializer';
+import { RiveInitializer } from '../components/ui/RiveInitializer';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -69,27 +70,6 @@ export default function RootLayout({
                 touch-action: manipulation;
               }
 
-              /* Input styling */
-              input, textarea {
-                background-color: rgb(0, 0, 0) !important;
-                -webkit-text-fill-color: #f3f4f6 !important;
-                color: #f3f4f6 !important;
-                transition: none !important;
-              }
-
-              input:-webkit-autofill,
-              input:-webkit-autofill:hover,
-              input:-webkit-autofill:focus,
-              input:-webkit-autofill:active,
-              textarea:-webkit-autofill {
-                -webkit-text-fill-color: #f3f4f6 !important;
-                -webkit-box-shadow: 0 0 0 30px rgb(0, 0, 0) inset !important;
-                box-shadow: 0 0 0 30px rgb(0, 0, 0) inset !important;
-                background-color: rgb(0, 0, 0) !important;
-                caret-color: #f3f4f6 !important;
-                transition: none !important;
-              }
-              
               /* Mobile-specific fixes */
               @media (max-width: 767px) {
                 html, body {
@@ -181,6 +161,9 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         
+        {/* Critical image preloading */}
+        <link rel="preload" href="/images/hayden-hero-1.webp" as="image" fetchPriority="high" />
+        
         {/* Lordicon Script */}
         <script src="https://cdn.lordicon.com/lordicon.js"></script>
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -190,6 +173,9 @@ export default function RootLayout({
       </head>
       <body className="font-inter antialiased bg-black touch-auto isolate" suppressHydrationWarning>
         <Providers>
+          {/* Initialize Rive and preload WASM */}
+          <RiveInitializer />
+          
           {/* Sparkles background - directly importing client component */}
           <ClientBackground />
           
@@ -199,8 +185,10 @@ export default function RootLayout({
           </div>
           
           {/* Debug component with URL-based activation */}
-          {process.env.NODE_ENV === 'development' && (
-            <RiveDebugInitializer />
+          {process.env.NODE_ENV !== 'production' && (
+            <div className="fixed bottom-0 left-0 z-50">
+              <RiveDebugInitializer />
+            </div>
           )}
         </Providers>
         <ClientComponents />

@@ -7,22 +7,46 @@
  */
 export enum ImagePriority {
   HIGH = 'high',
+  CRITICAL = 'critical', // New priority level for absolutely critical images like hero
   LOW = 'low',
 }
 
 /**
  * Returns the appropriate loading props for an image based on its priority level
- * @param priority The priority level of the image (HIGH for hero/header, LOW for everything else)
+ * @param priority The priority level of the image (CRITICAL for hero, HIGH for header, LOW for everything else)
  * @returns Object with loading, priority, fetchPriority, and quality props
  */
 export function getImageLoadingProps(priority: ImagePriority = ImagePriority.LOW) {
-  const isHighPriority = priority === ImagePriority.HIGH;
+  const isHighPriority = priority === ImagePriority.HIGH || priority === ImagePriority.CRITICAL;
+  const isCritical = priority === ImagePriority.CRITICAL;
   
+  // For critical images, provide all possible optimization properties
+  if (isCritical) {
+    return {
+      loading: 'eager' as const,
+      priority: true,
+      fetchPriority: 'high' as const,
+      quality: 95,
+      decoding: 'sync' as const,
+    };
+  }
+  
+  // For high priority images
+  if (isHighPriority) {
+    return {
+      loading: 'eager' as const,
+      priority: true,
+      fetchPriority: 'high' as const,
+      quality: 90,
+    };
+  }
+  
+  // For low priority images
   return {
-    loading: isHighPriority ? 'eager' as const : 'lazy' as const,
-    priority: isHighPriority,
-    fetchPriority: isHighPriority ? 'high' as const : 'auto' as const,
-    quality: isHighPriority ? 90 : 75,
+    loading: 'lazy' as const,
+    priority: false,
+    fetchPriority: 'auto' as const,
+    quality: 75,
   };
 }
 
