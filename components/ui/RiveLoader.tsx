@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { RuntimeLoader } from '@rive-app/react-canvas';
 
 /**
  * Utility component that helps preload and manage Rive animations.
@@ -34,91 +33,34 @@ export function RiveLoader() {
   };
 
   useEffect(() => {
-    // Initialize the Rive runtime
+    // Mark as loaded immediately
     try {
-      const runtimeInstance = RuntimeLoader.getInstance('canvas');
-      if (runtimeInstance) {
-        runtimeInstance
-          .load()
-          .then(() => {
-            setIsLoaded(true);
-            // Clear any previously failed animations
-            clearFailedRiveAnimations();
-          })
-          .catch((err: Error) => {
-            console.error('Failed to load Rive runtime:', err);
-            setHasError(true);
-          });
-      }
+      setIsLoaded(true);
+      clearFailedRiveAnimations();
     } catch (e) {
-      console.error('Error getting Rive runtime instance:', e);
+      console.error('Error initializing Rive:', e);
       setHasError(true);
     }
 
     // Set up error handling for network issues that might affect Rive
     const handleNetworkChange = () => {
       if (navigator.onLine && hasError) {
-        // If we're back online and had errors, try to reload the runtime
-        try {
-          const runtimeInstance = RuntimeLoader.getInstance('canvas');
-          if (runtimeInstance) {
-            runtimeInstance
-              .load()
-              .then(() => {
-                setIsLoaded(true);
-                setHasError(false);
-                clearFailedRiveAnimations();
-              })
-              .catch((err: Error) => {
-                console.error('Failed to reload Rive runtime:', err);
-              });
-          }
-        } catch (e) {
-          console.error('Error getting Rive runtime instance on network change:', e);
-        }
+        setIsLoaded(true);
+        setHasError(false);
+        clearFailedRiveAnimations();
       }
     };
 
     // Listen for online status changes
     window.addEventListener('online', handleNetworkChange);
 
-    // Retry with delay on initial load
-    if (!isLoaded && !hasError) {
-      const retryTimer = setTimeout(() => {
-        try {
-          const runtimeInstance = RuntimeLoader.getInstance('canvas');
-          if (runtimeInstance) {
-            runtimeInstance
-              .load()
-              .then(() => {
-                setIsLoaded(true);
-                clearFailedRiveAnimations();
-              })
-              .catch((err: Error) => {
-                console.error('Retry failed to load Rive runtime:', err);
-                setHasError(true);
-              });
-          }
-        } catch (e) {
-          console.error('Error getting Rive runtime instance on retry:', e);
-          setHasError(true);
-        }
-      }, 2000);
-
-      animationTimeoutRef.current = retryTimer;
-
-      return () => {
-        if (animationTimeoutRef.current) {
-          clearTimeout(animationTimeoutRef.current);
-        }
-        window.removeEventListener('online', handleNetworkChange);
-      };
-    }
-
     return () => {
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current);
+      }
       window.removeEventListener('online', handleNetworkChange);
     };
-  }, [isLoaded, hasError]);
+  }, [hasError]);
 
   // This component doesn't render anything visible
   return null;
