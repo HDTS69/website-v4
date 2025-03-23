@@ -16,7 +16,7 @@ export function Breadcrumb({ className = '' }: BreadcrumbProps) {
   if (pathname === '/') return null;
   
   // Create breadcrumb segments
-  const segments = pathname.split('/').filter(Boolean);
+  const segments = pathname?.split('/').filter(Boolean) || [];
   
   // Format segment names for display (convert kebab-case to Title Case)
   const formatSegmentName = (segment: string) => {

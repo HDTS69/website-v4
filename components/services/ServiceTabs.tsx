@@ -101,10 +101,10 @@ const ServiceLink = ({ service }: ServiceLinkProps) => (
       href={service.href}
       className="relative flex-grow py-2"
     >
-      <span className="text-white text-base font-medium hover:text-[#00E6CA] transition-colors duration-300">
+      <span className="relative text-white text-base font-medium hover:text-[#00E6CA] transition-colors duration-300 inline-block">
         {service.name}
+        <span className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-[#00E6CA] to-transparent w-0 group-hover:w-full transition-all duration-300 transform-gpu"></span>
       </span>
-      <span className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-[#00E6CA] to-transparent w-8 group-hover:w-full transition-all duration-300"></span>
     </Link>
     <svg
       className="w-5 h-5 text-[#00E6CA] transform group-hover:translate-x-1 transition-transform duration-300 flex-shrink-0"
@@ -129,15 +129,15 @@ const serviceData: Record<ServiceId, ServiceContent> = {
     description: "From emergency repairs to complete bathroom renovations, our licensed plumbers deliver reliable solutions with guaranteed workmanship.",
     imagePath: "/images/placeholder-service.jpg",
     services: [
-      { name: "Emergency Plumbing", href: "/services/plumbing/emergency-plumbing" },
-      { name: "Hot Water Systems", href: "/services/plumbing/hot-water-systems" },
-      { name: "Blocked Drains", href: "/services/plumbing/drain-cleaning" },
-      { name: "Leaking Taps", href: "/services/plumbing/fixtures-taps" },
-      { name: "Toilet Installations & Repairs", href: "/services/plumbing/toilet-repairs" },
-      { name: "Water Pressure Solutions", href: "/services/plumbing/water-pressure" },
-      { name: "Bathroom Renovations", href: "/services/plumbing/bathroom-renovations" },
-      { name: "Pipe Installations & Repairs", href: "/services/plumbing/pipe-repairs" },
-      { name: "Hot Water System Buyers Guide", href: "/services/plumbing/hot-water-system-buyers-guide", isGuide: true }
+      { name: "Emergency Plumbing", href: "/services/plumbing/emergency" },
+      { name: "Blocked Drains", href: "/services/plumbing/blocked-drains" },
+      { name: "Blocked Toilet", href: "/services/plumbing/blocked-toilet" },
+      { name: "CCTV Camera Inspection", href: "/services/plumbing/cctv-inspection" },
+      { name: "Leak Detection", href: "/services/plumbing/leak-detection" },
+      { name: "Leaking Taps", href: "/services/plumbing/leaking-taps" },
+      { name: "Hot Water Systems", href: "/services/plumbing/hot-water" },
+      { name: "Toilet Installations & Repairs", href: "/services/plumbing/toilet-installations" },
+      { name: "Bathroom Renovations", href: "/services/plumbing/bathroom-renovations" }
     ]
   },
   gasFitting: {
@@ -147,12 +147,12 @@ const serviceData: Record<ServiceId, ServiceContent> = {
     imagePath: "/images/placeholder-service.jpg",
     services: [
       { name: "Emergency Gas Repairs", href: "/services/gas-fitting/emergency-gas-repairs" },
-      { name: "Gas Leak Detection", href: "/services/gas-fitting/gas-leak-detection" },
-      { name: "Gas Heater Services", href: "/services/gas-fitting/gas-heater-services" },
-      { name: "Gas Appliance Installation", href: "/services/gas-fitting/gas-appliance-installation" },
+      { name: "Gas Leak Detection Service", href: "/services/gas-fitting/gas-leak-detection" },
+      { name: "Gas Line Inspections", href: "/services/gas-fitting/gas-line-inspections" },
+      { name: "Gas Pipe Repair", href: "/services/gas-fitting/gas-pipe-repair" },
+      { name: "Gas Appliance Installation & Repairs", href: "/services/gas-fitting/gas-appliance-installation" },
       { name: "Gas Cooktop Installation", href: "/services/gas-fitting/gas-cooktop-installation" },
-      { name: "Gas Line Installation", href: "/services/gas-fitting/gas-line-installation" },
-      { name: "Gas Safety Inspections", href: "/services/gas-fitting/gas-safety-inspections" },
+      { name: "Gas Hot Water System Installation", href: "/services/gas-fitting/gas-hot-water-installation" },
       { name: "Gas Compliance Certificates", href: "/services/gas-fitting/gas-compliance-certificates" }
     ]
   },
@@ -162,15 +162,15 @@ const serviceData: Record<ServiceId, ServiceContent> = {
     description: "Expert roof repairs and maintenance to keep your home safe and dry, with comprehensive inspection services.",
     imagePath: "/images/placeholder-service.jpg",
     services: [
-      { name: "Emergency Roof Repairs", href: "/services/roof-repairs/emergency-repairs" },
-      { name: "Leak Investigation", href: "/services/roof-repairs/leak-investigation" },
-      { name: "Roof Tile Repair", href: "/services/roof-repairs/roof-tile-repair" },
-      { name: "Gutter & Downpipes", href: "/services/roof-repairs/gutter-downpipes" },
+      { name: "Roof Inspections", href: "/services/roof-repairs/inspections" },
+      { name: "Roof Reports", href: "/services/roof-repairs/reports" },
+      { name: "Roof Leak Detection", href: "/services/roof-repairs/leak-detection" },
+      { name: "Roof Repairs", href: "/services/roof-repairs/repairs" },
+      { name: "Roof Tile Repairs", href: "/services/roof-repairs/tile-repairs" },
       { name: "Metal Roofing", href: "/services/roof-repairs/metal-roofing" },
-      { name: "Roof Maintenance", href: "/services/roof-repairs/roof-maintenance" },
-      { name: "Gutter Guard", href: "/services/roof-repairs/gutter-guard" },
-      { name: "Roof Reports", href: "/services/roof-repairs/roof-report" },
-      { name: "Roof Sizing Calculator", href: "/services/roof-repairs/roof-sizing-calculator", isCalculator: true }
+      { name: "Gutter & Downpipes", href: "/services/roof-repairs/gutter-downpipes" },
+      { name: "Gutter Guard Installation", href: "/services/roof-repairs/gutter-guard" },
+      { name: "Roof Cleaning", href: "/services/roof-repairs/cleaning" }
     ]
   },
   airConditioning: {
@@ -179,14 +179,14 @@ const serviceData: Record<ServiceId, ServiceContent> = {
     description: "From installation to maintenance, we ensure your comfort with expert air conditioning services.",
     imagePath: "/images/placeholder-service.jpg",
     services: [
-      { name: "Emergency AC Repairs", href: "/services/air-conditioning/emergency-services" },
-      { name: "Split System Installation", href: "/services/air-conditioning/split-system-installation" },
-      { name: "Ducted Systems", href: "/services/air-conditioning/ducted-systems" },
-      { name: "AC Diagnostics & Repairs", href: "/services/air-conditioning/ac-repairs" },
+      { name: "AC Installation", href: "/services/air-conditioning/installation" },
+      { name: "AC Repairs", href: "/services/air-conditioning/repairs" },
+      { name: "AC Servicing", href: "/services/air-conditioning/servicing" },
+      { name: "Split System AC", href: "/services/air-conditioning/split-system" },
+      { name: "Ducted AC", href: "/services/air-conditioning/ducted" },
+      { name: "Commercial AC Services", href: "/services/air-conditioning/commercial-services" },
       { name: "System Maintenance", href: "/services/air-conditioning/maintenance" },
       { name: "System Optimization", href: "/services/air-conditioning/system-optimization" },
-      { name: "System Upgrades", href: "/services/air-conditioning/system-upgrades" },
-      { name: "Commercial AC Services", href: "/services/air-conditioning/commercial-services" },
       { name: "Air Con Sizing Calculator", href: "/services/air-conditioning/air-con-sizing-calculator", isCalculator: true }
     ]
   }

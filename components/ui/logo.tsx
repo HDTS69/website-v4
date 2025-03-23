@@ -3,17 +3,20 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { RiveLogo } from './RiveLogo';
 
 export interface LogoProps {
   width?: number | string;
   height?: number | string;
   className?: string;
+  mobileTextOnly?: boolean;
 }
 
 export function Logo({
-  width = 48,
-  height = 48,
+  width = 100,
+  height = 100,
   className = '',
+  mobileTextOnly = false,
 }: LogoProps) {
   const pathname = usePathname();
   const isHomePage = pathname === '/';
@@ -21,27 +24,33 @@ export function Logo({
   const logoContent = (
     <>
       <div className="flex items-center">
-        <div className="relative" style={{ width: typeof width === 'number' ? `${width}px` : width, height: typeof height === 'number' ? `${height}px` : height }}>
-          <Image 
-            src="/images/icon-logo.webp" 
-            alt="HD Trade Services Logo" 
-            width={typeof width === 'number' ? width : 48} 
-            height={typeof height === 'number' ? height : 48}
-            priority
+        {!mobileTextOnly && (
+          <RiveLogo 
+            width={typeof width === 'number' ? width : 100} 
+            height={typeof height === 'number' ? height : 100}
           />
-        </div>
-        <div className="relative h-8 w-48 ml-2 hidden sm:block">
+        )}
+        <div className="relative h-10 w-56 ml-4 hidden sm:block">
           <Image
             src="/images/text-logo.webp"
             alt="HD Trade Services"
             fill
             style={{ objectFit: 'contain', objectPosition: 'left' }}
             priority
+            sizes="(max-width: 768px) 100vw, 224px"
           />
         </div>
-        <span className="text-white text-xl font-bold ml-2 sm:hidden">
-          HD Trade Services
-        </span>
+        <div className="sm:hidden">
+          <Image
+            src="/images/text-logo.webp"
+            alt="HD Trade Services"
+            width={150}
+            height={32}
+            style={{ objectFit: 'contain' }}
+            priority
+            sizes="150px"
+          />
+        </div>
       </div>
     </>
   );

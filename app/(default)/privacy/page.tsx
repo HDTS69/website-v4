@@ -185,7 +185,7 @@ export default function PrivacyPage() {
                 </p>
                 <div className="mt-4 text-gray-300">
                   <p>Email: privacy@hdtradeservices.com.au</p>
-                  <p>Phone: 1300 420 911</p>
+                  <p>Phone: <a href="tel:1300420911" className="text-[#1CD4A7] hover:underline">1300 420 911</a></p>
                   <p>Address: Brisbane, QLD</p>
                 </div>
               </div>

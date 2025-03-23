@@ -14,9 +14,11 @@ const nextConfig = {
     domains: ['maps.googleapis.com', 'localhost'],
   },
   reactStrictMode: true,
-  // Enable static export for production
-  output: 'export',
-  distDir: 'out',
+  // Enable static export for production only
+  ...(process.env.NODE_ENV === 'production' ? {
+    output: 'export',
+    distDir: 'out',
+  } : {}),
   experimental: {
     appDocumentPreloading: false,
   },
@@ -55,43 +57,9 @@ const nextConfig = {
           }
         ],
       },
-      {
-        // Handle Rive animation files specifically
-        source: '/rive/:file*.riv',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/octet-stream',
-          },
-          {
-            key: 'Access-Control-Allow-Origin',
-            value: '*',
-          },
-          {
-            key: 'Access-Control-Allow-Methods',
-            value: 'GET',
-          },
-          {
-            key: 'Access-Control-Allow-Headers',
-            value: '*',
-          },
-          {
-            key: 'Access-Control-Expose-Headers',
-            value: 'Content-Length',
-          },
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-          {
-            key: 'Timing-Allow-Origin',
-            value: '*',
-          }
-        ],
-      }
     ];
   },
-  // Configure webpack for Rive animations
+  // Configure webpack
   webpack: (config, { isServer }) => {
     // If client-side, don't polyfill fs
     if (!isServer) {
@@ -102,15 +70,6 @@ const nextConfig = {
         crypto: false,
       };
     }
-
-    // Configure Rive file handling
-    config.module.rules.push({
-      test: /\.riv$/,
-      type: 'asset/resource',
-      generator: {
-        filename: 'static/rive/[name].[hash][ext]'
-      }
-    });
 
     return config;
   },

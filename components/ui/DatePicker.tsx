@@ -293,7 +293,7 @@ export function DatePicker({
               >
                 <ChevronLeft className="h-4 w-4" data-testid="chevron-left" aria-hidden="true" />
               </button>
-              <div className="text-gray-300 font-medium" role="heading" aria-live="polite" aria-atomic="true">
+              <div className="text-gray-300 font-medium" role="heading" aria-level={2} aria-live="polite" aria-atomic="true">
                 {months[currentDate.getMonth()]} {currentDate.getFullYear()}
               </div>
               <button

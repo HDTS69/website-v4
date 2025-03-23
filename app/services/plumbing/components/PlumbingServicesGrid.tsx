@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import LordIcon from '@/app/components/LordIcon';
+import Image from 'next/image';
 
 interface Service {
   title: string;
@@ -220,9 +221,11 @@ export function PlumbingServicesGrid() {
                         size={64}
                       />
                     ) : (
-                      <img 
+                      <Image 
                         src={service.icon} 
                         alt={service.title}
+                        width={64}
+                        height={64}
                         className="w-full h-full object-contain"
                       />
                     )}

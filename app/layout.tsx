@@ -1,11 +1,14 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from 'next';
 import { ClientComponents } from './components/ClientComponents';
 import ClientBackground from './components/ClientBackground';
 import Script from 'next/script';
 import { Providers } from '../components/providers';
-import ClientRiveLoader from './components/ClientRiveLoader';
+import { cn } from '@/lib/utils';
+import 'swiper/css';
+import { RiveDebug } from '../components/debug/RiveDebug';
+import { RiveDebugInitializer } from '../components/debug/RiveDebugInitializer';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -125,10 +128,6 @@ export default function RootLayout({
         
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-        <link rel="dns-prefetch" href="https://maps.googleapis.com" />
-        
-        <link rel="preconnect" href="https://maps.googleapis.com" />
-        <link rel="preconnect" href="https://maps.gstatic.com" crossOrigin="anonymous" />
         
         {/* Lordicon Script */}
         <script src="https://cdn.lordicon.com/lordicon.js"></script>
@@ -146,17 +145,13 @@ export default function RootLayout({
           <div className="relative z-10 min-h-screen flex flex-col touch-auto">
             {children}
           </div>
+          
+          {/* Debug component with URL-based activation */}
+          {process.env.NODE_ENV === 'development' && (
+            <RiveDebugInitializer />
+          )}
         </Providers>
         <ClientComponents />
-        
-        {/* RiveScript component for handling Rive animations */}
-        <ClientRiveLoader />
-        
-        {/* Load Google Maps API with proper async attribute */}
-        <Script
-          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
-          strategy="afterInteractive"
-        />
       </body>
     </html>
   );

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import LordIcon from '@/app/components/LordIcon';
 
 // Remove the type declaration since we're using a different approach
@@ -188,9 +189,11 @@ export function GasServicesGrid() {
                   ) : service.emoji ? (
                     <PlaceholderIcon service={service} />
                   ) : (
-                    <img 
+                    <Image 
                       src={service.icon} 
                       alt={service.title}
+                      width={64}
+                      height={64}
                       className="w-full h-full object-contain"
                     />
                   )}

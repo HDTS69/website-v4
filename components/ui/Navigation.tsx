@@ -273,15 +273,7 @@ const defaultActionItems: NavItem[] = [
 export function Navigation({ items: propItems = defaultNavigationItems, actionItems = [] }: BaseNavigationProps) {
   const pathname = usePathname();
   const isDesktop = useMediaQuery('(min-width: 768px)');
-  const [mobileNavItems, setMobileNavItems] = useState<NavItem[]>([]);
-  const [actionButtons, setActionButtons] = useState<NavItem[]>([]);
-
-  useEffect(() => {
-    // Filter out "Call Now" for mobile nav to handle differently
-    setMobileNavItems(propItems.filter(item => item.name !== 'Call Now' && item.name !== 'Book Online' && item.name !== 'Home'));
-    setActionButtons(propItems.filter(item => item.name === 'Call Now' || item.name === 'Book Online'));
-  }, [propItems]);
-
+  
   return (
     <>
       {/* Desktop Navigation */}
@@ -291,7 +283,7 @@ export function Navigation({ items: propItems = defaultNavigationItems, actionIt
       
       {/* Mobile Navigation */}
       <div className="block md:hidden touch-auto" style={{ touchAction: 'manipulation' }}>
-        <MobileNavigation items={mobileNavItems} actionItems={actionButtons} />
+        <MobileNavigation items={propItems} actionItems={actionItems} />
       </div>
     </>
   );

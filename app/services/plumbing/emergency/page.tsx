@@ -899,23 +899,8 @@ function TestimonialsSection() {
 
 // Main page component - update with proper script loading
 export default function EmergencyPlumbingPage() {
-  useEffect(() => {
-    // Handle Google Maps loading
-    if (!window.google) {
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places&callback=Function.prototype`;
-      script.async = true;
-      script.defer = true;
-      document.head.appendChild(script);
-
-      return () => {
-        if (document.head.contains(script)) {
-          document.head.removeChild(script);
-        }
-      };
-    }
-  }, []);
-
+  // We no longer need to load Google Maps API here - it's loaded globally in layout.tsx
+  
   return (
     <main className="relative w-full">
       <style jsx global>{customButtonStyles}</style>
