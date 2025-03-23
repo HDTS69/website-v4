@@ -34,7 +34,7 @@ export function MobileHeader() {
         <div className="w-full flex items-center justify-between px-3 relative">
           {/* Left-aligned Icon Logo */}
           <div className="flex-shrink-0">
-            <RiveLogo />
+            <RiveLogo width={80} height={80} />
           </div>
           
           {/* Centered Text Logo */}
@@ -42,12 +42,12 @@ export function MobileHeader() {
             <Image
               src="/images/text-logo.webp"
               alt="HD Trade Services"
-              width={180}
-              height={40}
+              width={160}
+              height={35}
               style={{ objectFit: 'contain' }}
               priority
-              className="max-h-[40px] w-auto"
-              sizes="180px"
+              className="max-h-[35px] w-auto"
+              sizes="160px"
             />
           </div>
         </div>
@@ -92,17 +92,17 @@ export function MobileHeader() {
           "fixed top-0 left-0 right-0 w-full z-[60]", // Higher z-index to ensure it's above the header
           "bg-black/80 backdrop-blur-sm border-b border-gray-800/40",
           "block md:hidden",
-          "py-1 px-4"
+          "py-0.5 px-4"
         )}
         style={{ 
           touchAction: 'auto',
-          paddingTop: 'env(safe-area-inset-top)'
+          paddingTop: 'calc(env(safe-area-inset-top) + 2px)'
         }}
       >
         <div className="flex justify-center items-center w-full">
           <OpenNowIndicator 
             showTime={false}
-            className="text-sm font-medium" 
+            className="text-xs font-medium" 
           />
         </div>
       </div>
@@ -121,10 +121,10 @@ export function MobileHeader() {
         )}
         style={{ 
           touchAction: 'auto',
-          paddingTop: 'calc(env(safe-area-inset-top) + 1.75rem)' // Add extra padding for the indicator
+          paddingTop: 'calc(env(safe-area-inset-top) + 1.25rem)' // Add extra padding for the indicator
         }}
       >
-        <div className="py-4">
+        <div className="py-2">
           <LogoButton />
         </div>
       </header>

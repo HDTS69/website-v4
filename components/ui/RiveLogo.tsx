@@ -75,7 +75,7 @@ export function RiveLogo({ width = 100, height = 100, className }: RiveLogoProps
     >
       {/* Show Rive animation when loaded */}
       {!hasError && (
-        <div className={`absolute inset-0 transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="absolute inset-0">
           <RiveComponent />
         </div>
       )}
@@ -91,13 +91,6 @@ export function RiveLogo({ width = 100, height = 100, className }: RiveLogoProps
           sizes={`${width}px`}
           priority
         />
-      )}
-      
-      {/* Placeholder while loading */}
-      {!isLoaded && !hasError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-full">
-          <div className="w-8 h-8 border-2 border-t-transparent border-[#00E6CA] rounded-full animate-spin"></div>
-        </div>
       )}
     </div>
   );

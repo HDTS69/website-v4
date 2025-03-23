@@ -13,7 +13,7 @@ export function Hero() {
   const [showBookingForm, setShowBookingForm] = React.useState(false);
 
   return (
-    <div className="relative min-h-[100dvh] flex flex-col bg-black opacity-0 animate-fade-in animation-delay-200 overflow-x-hidden overflow-y-auto pb-24 pt-36 touch-auto">
+    <div className="relative min-h-[100dvh] flex flex-col bg-black opacity-0 animate-fade-in animation-delay-200 overflow-x-hidden overflow-y-auto pb-24 pt-20 touch-auto">
       {/* Sparkles Animation - Reduced particle density for better performance */}
       <div className="absolute inset-0 z-[2] pointer-events-none">
         <SparklesCore
@@ -76,9 +76,9 @@ export function Hero() {
 
       {/* Content Container */}
       <div 
-        className="container mx-auto px-4 py-8 relative z-10"
+        className="container mx-auto px-4 py-4 relative z-10"
       >
-        <div className="flex flex-col items-center min-h-[calc(100vh-260px)] justify-center mt-8">
+        <div className="flex flex-col items-center min-h-[calc(100vh-180px)] justify-center">
           {/* Hero Text */}
           <div className="flex flex-col items-center max-w-[100%] text-center mb-6">
             {/* New shadow box to help with visibility */}
