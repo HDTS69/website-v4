@@ -3,6 +3,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRive, RuntimeLoader, Layout, Fit, Alignment, useStateMachineInput } from '@rive-app/react-canvas';
 import Image from 'next/image';
+import { useRiveContext } from './RiveContext';
+
+// Unique identifier for this animation
+const LOGO_ANIMATION_ID = 'icon-logo-animation';
 
 interface RiveLogoProps {
   width?: number;
@@ -14,20 +18,31 @@ export function RiveLogo({ width = 100, height = 100, className }: RiveLogoProps
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const isVisibleRef = useRef(true);
+  const initialLoadRef = useRef(false);
+  const { hasAnimationPlayed, markAnimationPlayed } = useRiveContext();
+  
+  // Check if animation has already played
+  const alreadyPlayed = hasAnimationPlayed(LOGO_ANIMATION_ID);
   
   // Using the custom logo animation from the /rive folder
   const { RiveComponent, rive } = useRive({
     src: '/rive/icon-logo-animation.riv',
-    autoplay: true,
+    autoplay: !alreadyPlayed, // Only autoplay if it hasn't played before
     layout: new Layout({
       fit: Fit.Contain,
       alignment: Alignment.Center
     }),
-    // Use stateMachines and artboard if they exist in your Rive file
-    // stateMachines: "state-machine",
-    // artboard: "main",
-    onLoad: () => setIsLoaded(true),
+    onLoad: () => {
+      setIsLoaded(true);
+      initialLoadRef.current = true;
+      
+      // If animation already played, make sure we pause it immediately
+      if (rive && alreadyPlayed) {
+        setTimeout(() => {
+          rive.pause();
+        }, 0);
+      }
+    },
     onLoadError: (e) => {
       console.error('Rive animation failed to load:', e);
       setHasError(true);
@@ -45,86 +60,44 @@ export function RiveLogo({ width = 100, height = 100, className }: RiveLogoProps
     return () => clearTimeout(timer);
   }, [isLoaded]);
 
-  // Optimize Rive canvas when the component mounts
+  // Set up the canvas and play animation once on initial load
   useEffect(() => {
-    if (rive && containerRef.current) {
-      // Find the canvas element within our container
+    if (!rive || !isLoaded) return;
+
+    // Optimize canvas dimensions
+    if (containerRef.current) {
       const canvas = containerRef.current.querySelector('canvas');
       if (canvas) {
-        // Set explicit dimensions to the canvas element for better performance
         canvas.style.width = `${width}px`;
         canvas.style.height = `${height}px`;
         
-        // Set actual pixel dimensions based on device pixel ratio for crisp rendering
         const pixelRatio = window.devicePixelRatio || 1;
         const scaledWidth = Math.floor(width * pixelRatio);
         const scaledHeight = Math.floor(height * pixelRatio);
         
-        // Only resize if necessary
         if (canvas.width !== scaledWidth || canvas.height !== scaledHeight) {
           canvas.width = scaledWidth;
           canvas.height = scaledHeight;
-          
-          // Notify Rive to resize its renderer
           rive.resizeToCanvas();
         }
       }
     }
-  }, [rive, width, height]);
 
-  // Pause the animation when the component is not visible to save resources
-  useEffect(() => {
-    if (!rive) return;
-
-    // Create an intersection observer to detect visibility
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        isVisibleRef.current = entry.isIntersecting;
-        
-        // Pause/play based on visibility
-        if (entry.isIntersecting) {
-          rive.play();
-        } else {
-          rive.pause();
-        }
-      });
-    }, {
-      root: null, // viewport
-      threshold: 0.1 // trigger when 10% of the element is visible
-    });
-
-    // Start observing the container
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
-    // Cleanup function
-    return () => {
-      observer.disconnect();
-      if (rive) {
-        rive.pause();
-      }
-    };
-  }, [rive]);
-
-  // Handle visibility change events (tab switching)
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!rive) return;
+    // Let animation play once for 2 seconds, then pause it
+    if (initialLoadRef.current && !alreadyPlayed) {
+      rive.play();
       
-      if (document.hidden) {
+      const pauseTimer = setTimeout(() => {
         rive.pause();
-      } else if (isVisibleRef.current) {
-        rive.play();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [rive]);
+        markAnimationPlayed(LOGO_ANIMATION_ID);
+      }, 2000); // Play for 2 seconds then freeze
+      
+      return () => clearTimeout(pauseTimer);
+    } else if (alreadyPlayed) {
+      // Ensure already played animations are paused
+      rive.pause();
+    }
+  }, [rive, isLoaded, width, height, alreadyPlayed, markAnimationPlayed]);
 
   return (
     <div 
