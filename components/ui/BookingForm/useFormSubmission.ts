@@ -53,26 +53,8 @@ export const useFormSubmission = ({
         throw new Error(supabaseError.message || "Failed to submit booking");
       }
 
-      // Send email notifications
-      const emailResponse = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          address: formData.address,
-          services: formData.services,
-          preferredTime: formData.preferredTime,
-          message: formData.message || '',
-        }),
-      });
-
-      if (!emailResponse.ok) {
-        console.warn('Email notification failed, but booking was saved');
-      }
+      // Email notifications are now handled via Supabase database triggers
+      // or will be implemented later with a compatible email service
 
       setSubmitStatus('success');
       console.log('Setting showThankYou to true after successful submission');
@@ -88,4 +70,4 @@ export const useFormSubmission = ({
   return {
     submitForm,
   };
-}; 
+};
