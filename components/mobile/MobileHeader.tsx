@@ -10,66 +10,54 @@ import { RiveLogo } from '../ui/RiveLogo';
 
 export function MobileHeader() {
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
-  const [isVisible, setIsVisible] = useState<boolean>(true);
   const pathname = usePathname();
   const isHomePage = pathname === '/';
 
+  // Handle scroll effect for header background
   useEffect(() => {
     const handleScroll = () => {
-      const currentScroll = window.scrollY;
-      // Update background opacity
-      setIsScrolled(currentScroll > 20);
+      setIsScrolled(window.scrollY > 20);
     };
     
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Logo with navigation functionality
   const LogoButton = () => {
-    const buttonContent = (
-      <div className="flex items-center w-full relative">
-        {/* Main Logo Section with logos */}
-        <div className="w-full flex items-center justify-between px-3 relative">
-          {/* Left-aligned Icon Logo */}
-          <div className="flex-shrink-0">
-            <RiveLogo width={80} height={80} />
-          </div>
-          
-          {/* Centered Text Logo */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 flex justify-center items-center">
-            <Image
-              src="/images/text-logo.webp"
-              alt="HD Trade Services"
-              width={160}
-              height={35}
-              style={{ objectFit: 'contain' }}
-              priority
-              className="max-h-[35px] w-auto"
-              sizes="160px"
-            />
-          </div>
+    const logoContent = (
+      <div className="flex items-center justify-between w-full px-3">
+        {/* Left-aligned Icon Logo */}
+        <div className="flex-shrink-0 mr-2">
+          <RiveLogo width={70} height={70} />
+        </div>
+        
+        {/* Centered Text Logo */}
+        <div className="absolute left-1/2 transform -translate-x-1/2 flex justify-center items-center">
+          <Image
+            src="/images/text-logo.webp"
+            alt="HD Trade Services"
+            width={150}
+            height={32}
+            style={{ objectFit: 'contain' }}
+            priority
+            className="max-h-[32px] w-auto"
+            sizes="150px"
+          />
         </div>
       </div>
     );
 
+    // On homepage, scroll to top; otherwise navigate to homepage
     if (isHomePage) {
       return (
-        <div 
+        <button 
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="w-full cursor-pointer"
+          className="w-full bg-transparent border-none p-0 m-0 cursor-pointer"
           aria-label="Return to top"
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-          }}
         >
-          {buttonContent}
-        </div>
+          {logoContent}
+        </button>
       );
     }
 
@@ -79,52 +67,48 @@ export function MobileHeader() {
         className="w-full"
         aria-label="Return to homepage"
       >
-        {buttonContent}
+        {logoContent}
       </Link>
     );
   };
 
   return (
     <>
-      {/* Absolute position for Open Now Indicator at the top of the page */}
+      {/* Open Now Indicator - Fixed at top */}
       <div 
         className={cn(
-          "fixed top-0 left-0 right-0 w-full z-[60]", // Higher z-index to ensure it's above the header
-          "bg-black/80 backdrop-blur-sm border-b border-gray-800/40",
-          "block md:hidden",
-          "py-0.5 px-4"
+          "fixed top-0 left-0 right-0 w-full z-[60]",
+          "bg-black/90 backdrop-blur-sm border-b border-gray-800/40",
+          "block md:hidden"
         )}
         style={{ 
-          touchAction: 'auto',
-          paddingTop: 'calc(env(safe-area-inset-top) + 2px)'
+          paddingTop: 'calc(env(safe-area-inset-top) + 2px)',
+          paddingBottom: '2px'
         }}
       >
-        <div className="flex justify-center items-center w-full">
+        <div className="flex justify-center items-center">
           <OpenNowIndicator 
             showTime={false}
-            className="text-xs font-medium" 
+            className="text-xs font-medium text-[#00E6CA]" 
           />
         </div>
       </div>
       
-      {/* Main header with logos */}
+      {/* Main Header with Logos */}
       <header 
         className={cn(
-          // Base styles
           "fixed w-full z-50",
-          // Background and transition
           "transition-all duration-300 ease-in-out",
-          // Transparent background with blur
-          isScrolled ? "bg-black/80 backdrop-blur-sm shadow-lg" : "bg-transparent backdrop-blur-sm",
-          // Show only on mobile
+          isScrolled 
+            ? "bg-black/90 backdrop-blur-md shadow-lg" 
+            : "bg-gradient-to-b from-black/80 to-transparent backdrop-blur-sm",
           "block md:hidden"
         )}
         style={{ 
-          touchAction: 'auto',
-          paddingTop: 'calc(env(safe-area-inset-top) + 1.25rem)' // Add extra padding for the indicator
+          paddingTop: 'calc(env(safe-area-inset-top) + 1.25rem)'
         }}
       >
-        <div className="py-2">
+        <div className="py-1.5">
           <LogoButton />
         </div>
       </header>
