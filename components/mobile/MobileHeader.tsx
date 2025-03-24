@@ -92,7 +92,7 @@ export function MobileHeader() {
         <div className="w-full flex items-center justify-between px-0 relative">
           {/* Left-aligned Icon Logo */}
           <div className="flex-shrink-0 pl-0">
-            <RiveLogo width={100} height={100} />
+            <RiveLogo width={50} height={50} />
           </div>
           
           {/* Centered Text Logo */}
@@ -100,12 +100,12 @@ export function MobileHeader() {
             <Image
               src="/images/text-logo.webp"
               alt="HD Trade Services"
-              width={600}
-              height={130}
+              width={180}
+              height={40}
               style={{ objectFit: 'contain' }}
               priority
-              className="max-h-[130px] w-auto"
-              sizes="600px"
+              className="max-h-[40px] w-auto"
+              sizes="180px"
             />
           </div>
         </div>
