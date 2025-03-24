@@ -15,7 +15,7 @@ export function RiveInitializer() {
 
     const initializeRiveWasm = async () => {
       try {
-        // Dynamically import the WASM file from the correct package
+        // Dynamically import the WASM file - using @rive-app/canvas as recommended in docs
         const wasmModule = await import('@rive-app/canvas/rive.wasm');
         
         if (wasmModule.default) {

@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { useRive, Layout, Fit, Alignment } from '@rive-app/react-canvas-lite';
+import { useRive } from '@rive-app/react-canvas';
 import Image from 'next/image';
-import { pauseRiveAnimation, handleRiveError } from '@/utils/riveUtils';
+import { pauseRiveAnimation, handleRiveError, createRiveLayout } from '@/utils/riveUtils';
 
 interface RiveLogoProps {
   width?: number;
@@ -36,25 +36,53 @@ export function RiveLogo({ width = 100, height = 100, className = '' }: RiveLogo
   const [errorDetails, setErrorDetails] = useState<string>('');
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   
+  // Device pixel ratio for proper scaling
+  const [devicePixelRatio, setDevicePixelRatio] = useState(1);
+  
+  // Update device pixel ratio on component mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setDevicePixelRatio(window.devicePixelRatio || 1);
+    }
+  }, []);
+  
   // Handle different file naming conventions
   const [animationSrc, setAnimationSrc] = useState('/rive/icon-logo-animation.riv');
   
-  const { RiveComponent, rive } = useRive({
+  // Initialize with basic settings, we'll set the layout after loading
+  const { RiveComponent, rive: riveInstance } = useRive({
     src: animationSrc,
     autoplay: !hasAnimationPlayedGlobally,
-    layout: new Layout({
-      fit: Fit.Cover,
-      alignment: Alignment.Center,
-    }),
     onLoad: () => {
       setIsLoaded(true);
       setErrorDetails('');
       
       // Use the resizeDrawingSurfaceToCanvas method to properly handle high-DPI displays
-      if (rive) {
+      if (riveInstance) {
         try {
-          // This ensures the canvas drawing surface is properly sized based on the device pixel ratio
-          rive.resizeDrawingSurfaceToCanvas();
+          // Update device pixel ratio in case of window changes (like moving to different monitor)
+          if (typeof window !== 'undefined') {
+            setDevicePixelRatio(window.devicePixelRatio || 1);
+          }
+          
+          // Properly resize the drawing surface when the window size changes
+          riveInstance.resizeDrawingSurfaceToCanvas();
+          
+          // Apply layout after runtime is initialized
+          if (typeof riveInstance.layout !== 'undefined') {
+            // If there's already a layout object with copyWith method, use it
+            // We won't manually set it to avoid the copyWith error
+          } else {
+            // Try to create and apply a layout if one doesn't exist
+            const layout = createRiveLayout(riveInstance);
+            if (layout) {
+              try {
+                riveInstance.layout = layout;
+              } catch (e) {
+                console.warn('Could not set layout, using default:', e);
+              }
+            }
+          }
         } catch (e) {
           console.warn('Could not resize drawing surface:', e);
         }
@@ -65,7 +93,7 @@ export function RiveLogo({ width = 100, height = 100, className = '' }: RiveLogo
         setAnimationComplete(true);
         
         // Ensure animation is stopped using utility function
-        pauseRiveAnimation(rive);
+        pauseRiveAnimation(riveInstance);
       } else {
         // Set a timeout to mark animation as complete after it has played
         animationTimeoutRef.current = setTimeout(() => {
@@ -80,7 +108,7 @@ export function RiveLogo({ width = 100, height = 100, className = '' }: RiveLogo
           }
           
           // Pause the animation using our utility function
-          pauseRiveAnimation(rive);
+          pauseRiveAnimation(riveInstance);
         }, 2000);
       }
     },
@@ -101,10 +129,15 @@ export function RiveLogo({ width = 100, height = 100, className = '' }: RiveLogo
   // Handle window resize to update canvas drawing surface
   useEffect(() => {
     const handleResize = () => {
-      if (rive) {
+      if (riveInstance) {
         try {
+          // Update device pixel ratio in case of window changes (like moving to different monitor)
+          if (typeof window !== 'undefined') {
+            setDevicePixelRatio(window.devicePixelRatio || 1);
+          }
+          
           // Properly resize the drawing surface when the window size changes
-          rive.resizeDrawingSurfaceToCanvas();
+          riveInstance.resizeDrawingSurfaceToCanvas();
         } catch (e) {
           console.warn('Could not resize drawing surface on window resize:', e);
         }
@@ -113,7 +146,7 @@ export function RiveLogo({ width = 100, height = 100, className = '' }: RiveLogo
     
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [rive]);
+  }, [riveInstance]);
 
   // Fallback to static image after timeout if animation doesn't load
   useEffect(() => {
@@ -133,10 +166,10 @@ export function RiveLogo({ width = 100, height = 100, className = '' }: RiveLogo
 
   // If animation is complete, ensure it's paused
   useEffect(() => {
-    if (animationComplete && rive) {
-      pauseRiveAnimation(rive);
+    if (animationComplete && riveInstance) {
+      pauseRiveAnimation(riveInstance);
     }
-  }, [animationComplete, rive]);
+  }, [animationComplete, riveInstance]);
   
   // Use a static image once animation is complete if we're showing Rive
   const showStaticImageAfterAnimation = animationComplete && isLoaded && !hasError;
@@ -158,7 +191,9 @@ export function RiveLogo({ width = 100, height = 100, className = '' }: RiveLogo
           ref={canvasContainerRef}
           className={`absolute inset-0 transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
           style={{ 
-            transform: 'scale(2)',
+            // Only apply transform scaling on high-DPI displays where needed
+            transform: devicePixelRatio > 1 ? `scale(${devicePixelRatio})` : 'none',
+            transformOrigin: 'center center',
             width: `${width}px`,
             height: `${height}px`
           }}
@@ -174,7 +209,7 @@ export function RiveLogo({ width = 100, height = 100, className = '' }: RiveLogo
           alt="HD Trade Services Icon" 
           width={width}
           height={height}
-          className="h-full w-full scale-200"
+          className={devicePixelRatio > 1 ? "h-full w-full scale-[2]" : "h-full w-full"}
           sizes={`${width}px`}
           priority
         />

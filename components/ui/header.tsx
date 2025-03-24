@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { getImageLoadingProps, IMAGE_SIZES, ImagePriority } from '@/utils/imageLoading';
 import { OpenNowIndicator } from './OpenNowIndicator';
-import Logo from './logo';
+import DesktopLogo from './DesktopLogo';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
@@ -62,7 +62,7 @@ export default function Header() {
         >
           {/* Logo Section */}
           <div className="flex justify-start pl-0">
-            <Logo />
+            <DesktopLogo width={100} height={100} />
           </div>
           
           {/* Open Now Indicator */}

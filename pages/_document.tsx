@@ -12,6 +12,14 @@ export default function Document() {
           crossOrigin="anonymous" 
           type="application/wasm" 
         />
+        
+        {/* Preload the hero image */}
+        <link
+          rel="preload"
+          href="/images/hayden-hero-1.webp"
+          as="image"
+          type="image/webp"
+        />
       </Head>
       <body>
         <Main />

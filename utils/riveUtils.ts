@@ -34,6 +34,41 @@ export async function preloadRiveWasm(): Promise<void> {
 }
 
 /**
+ * Creates a Rive layout object compatible with the runtime
+ * This is a workaround for type issues when using Rive's Layout class
+ */
+export function createRiveLayout(runtime: any): any {
+  if (!runtime) return null;
+  
+  try {
+    // Check if the runtime has Layout constructor
+    if (typeof runtime.Layout === 'function') {
+      return new runtime.Layout({
+        fit: runtime.Fit ? runtime.Fit.Contain : 'contain',
+        alignment: runtime.Alignment ? runtime.Alignment.Center : 'center'
+      });
+    }
+    
+    // Handle case where runtime object has different structure
+    if (runtime.canvas && typeof runtime.canvas.Layout === 'function') {
+      return new runtime.canvas.Layout({
+        fit: runtime.canvas.Fit ? runtime.canvas.Fit.Contain : 'contain',
+        alignment: runtime.canvas.Alignment ? runtime.canvas.Alignment.Center : 'center'
+      });
+    }
+
+    // Handle direct layout creation (no runtime object)
+    return {
+      fit: 'contain',
+      alignment: 'center'
+    };
+  } catch (err) {
+    console.warn('Could not create Rive layout:', err);
+    return null;
+  }
+}
+
+/**
  * Checks if the Rive WASM is loaded
  */
 export function isRiveWasmLoaded(): boolean {

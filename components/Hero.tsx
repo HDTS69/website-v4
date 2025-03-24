@@ -3,7 +3,6 @@
 import React from 'react';
 import { AnimatedButton } from './ui/AnimatedButton';
 import { SparklesCore } from './ui/SparklesCore';
-import { Cover } from './ui/cover';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Hero as MobileHero } from './mobile/Hero';
@@ -160,22 +159,6 @@ export function Hero() {
             >
               Fast response. Fair pricing. Guaranteed satisfaction.
             </p>
-
-            {/* "Warp Speed" text - moved into the main text column */}
-            <div
-              className="
-                text-base md:text-base text-gray-300 mb-3
-                leading-relaxed opacity-0 animate-fade-in-up
-                animation-delay-700 flex items-center justify-center
-                gap-1 drop-shadow-[0_2px_4px_rgba(0,0,0,1)]
-                font-medium transform-gpu
-              "
-            >
-              <span>We can have a technician to your home at</span>
-              <Cover className="text-[#00E6CA] font-semibold">
-                warp speed
-              </Cover>
-            </div>
 
             {/* Google Reviews Component */}
             <div

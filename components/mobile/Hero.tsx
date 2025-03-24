@@ -1,43 +1,42 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { SparklesCore } from '../ui/SparklesCore';
-import { Cover } from '../ui/cover';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AnimatedButton } from '../ui/AnimatedButton';
-import { getImageLoadingProps, IMAGE_SIZES, ImagePriority } from '@/utils/imageLoading';
 import { HeroBookingForm } from './HeroBookingForm';
 
 export function Hero() {
-  const [showBookingForm, setShowBookingForm] = React.useState(false);
-  // No longer need to manually track header height as we use CSS variables now
+  const [showBookingForm, setShowBookingForm] = useState(false);
 
   return (
     <div 
       className="relative min-h-[100dvh] flex flex-col bg-black overflow-x-hidden overflow-y-auto pb-20 touch-auto"
       style={{ 
-        paddingTop: '180px' // Restored spacing to match previous header height
+        paddingTop: '150px' // Slightly reduced to better match desktop spacing
       }}
     >
-      {/* Sparkles Animation - Reduced particle density for better performance */}
+      {/* Sparkles Animation */}
       <div className="absolute inset-0 z-[2] pointer-events-none">
         <SparklesCore
           background="transparent"
-          minSize={0.8}
-          maxSize={2}
-          particleDensity={100} // Reduced from 150
+          minSize={0.6}
+          maxSize={1.5}
+          particleDensity={120}
           className="w-full h-full"
           particleColor="#00E6CA"
           speed={0.4}
         />
       </div>
 
-      {/* Hero Images Container - Absolute position (fixed to hero section) */}
+      {/* Hero Images Container */}
       <div className="absolute inset-0 bottom-0 z-[3] transform-gpu pointer-events-none">
         <div className="relative h-full w-full">
           {/* Main Hero Image */}
           <AnimatePresence mode="wait">
             <motion.div 
-              className="absolute bottom-0 left-0 w-[55%] h-[65%]"
+              className="absolute bottom-0 left-0 w-[60%] h-[70%]"
               initial={{ y: '100vh', opacity: 0 }}
               animate={{ 
                 y: 0,
@@ -57,35 +56,33 @@ export function Hero() {
                   src="/images/hayden-hero-1.webp"
                   alt="Professional Technician"
                   fill
-                  sizes="55vw"
+                  sizes="60vw"
                   style={{ 
                     objectFit: 'contain', 
                     objectPosition: 'left bottom',
-                    filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.5))'
+                    filter: 'drop-shadow(0 0 10px rgba(0,230,202,0.15))'
                   }}
                   className="select-none optimize-performance"
-                  {...getImageLoadingProps(ImagePriority.CRITICAL)}
+                  priority
                   draggable="false"
                 />
               </div>
             </motion.div>
           </AnimatePresence>
           
-          {/* Bottom fade gradient only */}
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black to-transparent transform-gpu" />
+          {/* Bottom fade gradient */}
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent transform-gpu" />
         </div>
       </div>
 
-      {/* Content Container - Restored to original position */}
-      <div 
-        className="container mx-auto px-4 py-0 relative z-10"
-      >
-        <div className="flex flex-col items-center min-h-[calc(100vh-400px)] justify-center" style={{ marginTop: "0" }}>
+      {/* Content Container */}
+      <div className="container mx-auto px-4 py-0 relative z-10">
+        <div className="flex flex-col items-center justify-center" style={{ marginTop: "0" }}>
           {/* Hero Text */}
           <div className="flex flex-col items-center max-w-[100%] text-center mb-6">
-            {/* Text box with removed background */}
-            <div className="p-4 rounded-xl mb-4">
-              <h1 className="text-4xl font-bold text-white tracking-tight leading-tight mb-3">
+            {/* Main Headline */}
+            <div className="mb-4">
+              <h1 className="text-[2.5rem] font-bold text-white tracking-tight leading-tight mb-4">
                 <span className="block mb-2 opacity-0 animate-fade-in-up animation-delay-300">
                   Brisbane
                 </span>
@@ -97,21 +94,35 @@ export function Hero() {
                 </span>
               </h1>
               
-              <p className="text-base text-gray-300 mb-3 leading-relaxed font-medium opacity-0 animate-fade-in-up animation-delay-600">
-                Professional plumbing, gas, roofing & air conditioning services at fair prices.
+              <p className="text-lg text-gray-300 mb-2 leading-relaxed font-medium opacity-0 animate-fade-in-up animation-delay-600 max-w-md mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
+                Professional plumbing, gas, roofing & air conditioning services.
+              </p>
+
+              <p className="text-lg text-gray-300 mb-4 leading-relaxed font-medium opacity-0 animate-fade-in-up animation-delay-650 max-w-md mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
+                Fast response. Fair pricing. Guaranteed satisfaction.
               </p>
             </div>
 
-            {/* "Warp Speed" text */}
-            <div className="text-lg text-gray-300 mb-3 leading-relaxed flex items-center justify-center gap-1 opacity-0 animate-fade-in-up animation-delay-650 px-4">
-              <span>We can have a technician at your door at</span>
-              <Cover className="text-[#00E6CA] font-semibold">
-                warp speed
-              </Cover>
-            </div>
-
             {/* Star Review Component */}
-            <div className="px-6 py-3 bg-black/70 backdrop-blur-sm rounded-lg mb-6 transform-gpu opacity-0 animate-scale-up animation-delay-700">
+            <div 
+              className="px-6 py-3 bg-black/60 backdrop-blur-sm rounded-lg mb-8 transform-gpu opacity-0 animate-scale-up animation-delay-700 max-w-sm cursor-pointer hover:bg-black/70 transition-colors"
+              onClick={() => {
+                const reviewsSection = document.getElementById('testimonials');
+                if (reviewsSection) {
+                  reviewsSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  const reviewsSection = document.getElementById('testimonials');
+                  if (reviewsSection) {
+                    reviewsSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }
+              }}
+            >
               <div className="flex items-center justify-center">
                 <div className="flex">
                   {[1, 2, 3, 4, 5].map((star) => (
@@ -129,18 +140,24 @@ export function Hero() {
                   ))}
                 </div>
                 <span className="ml-2 text-white text-sm font-medium">
-                  4.9 (2,842+ Reviews)
+                  5.0 (36 Reviews)
                 </span>
               </div>
             </div>
 
-            {/* Book Now Button - Only show when booking form is hidden */}
+            {/* Book Now Button */}
             {!showBookingForm && (
-              <div className="w-full px-4 opacity-0 animate-fade-in-up animation-delay-750">
+              <div className="w-full max-w-[200px] mx-auto opacity-0 animate-fade-in-up animation-delay-750">
                 <AnimatedButton
-                  href="#"
-                  onClick={() => setShowBookingForm(true)}
-                  className="w-full justify-center py-4 animate-glow"
+                  href="#book"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const bookingForm = document.getElementById('book');
+                    if (bookingForm) {
+                      bookingForm.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                  className="w-full justify-center text-base font-medium py-3 shadow-lg shadow-cyan-900/20"
                 >
                   Book Now
                 </AnimatedButton>
