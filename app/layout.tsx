@@ -31,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} dark touch-auto`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} dark touch-auto overscroll-none`} suppressHydrationWarning>
       <head>
         <style
           dangerouslySetInnerHTML={{
@@ -39,121 +39,23 @@ export default function RootLayout({
               :root {
                 color-scheme: dark;
                 touch-action: manipulation;
-                --mobile-header-height: 180px; /* Default that gets overridden by JS */
-                --header-transition: 0.3s ease-in-out;
-              }
-              
-              html {
-                height: 100%;
-                margin: 0;
-                padding: 0;
-                touch-action: manipulation;
-                -ms-content-zooming: none;
-                -ms-touch-action: manipulation;
                 overscroll-behavior: none;
               }
-
-              body {
-                background-color: rgb(0, 0, 0);
-                min-height: 100%;
-                margin: 0;
-                padding: 0;
-                -webkit-overflow-scrolling: touch;
-                touch-action: manipulation;
-                overflow-y: auto;
-                overflow-x: hidden;
-                position: relative;
-              }
-
-              * {
-                box-sizing: border-box;
-                touch-action: manipulation;
-              }
-
-              /* Mobile-specific fixes */
-              @media (max-width: 767px) {
+              
+              @media (max-width: 768px) {
                 html, body {
-                  position: relative; /* Base position for everything */
-                  height: 100%;
-                  min-height: 100%;
                   overscroll-behavior: none;
-                  overflow-x: hidden;
+                  -webkit-overflow-scrolling: touch;
+                  scroll-behavior: smooth;
                 }
                 
-                /* Remove fixed header positioning */
-                body.has-fixed-header {
-                  /* Remove padding as we no longer have a fixed header */
-                  padding-top: 0;
-                  transition: none;
-                }
-                
-                /* Remove header-hidden class effects */
-                body.has-fixed-header.header-hidden {
-                  padding-top: 0;
-                }
-                
-                /* Remove fixed positioning for mobile headers */
-                #mobile-open-now, #mobile-main-header {
-                  /* Allow headers to scroll away naturally */
-                  position: absolute !important;
-                  z-index: 50;
-                  transform: none !important;
-                  will-change: auto;
-                  -webkit-backface-visibility: hidden;
+                .optimize-performance {
+                  will-change: transform;
+                  transform: translateZ(0);
                   backface-visibility: hidden;
-                  transition: none !important;
-                  background: transparent !important;
-                  backdrop-filter: none !important;
-                }
-                
-                /* iOS specific fixes - remove fixed positioning */
-                @supports (-webkit-touch-callout: none) {
-                  html {
-                    height: -webkit-fill-available;
-                  }
-                  
-                  body {
-                    min-height: -webkit-fill-available;
-                  }
-                  
-                  #mobile-open-now, #mobile-main-header {
-                    /* Allow headers to scroll away naturally on iOS */
-                    position: absolute !important;
-                    -webkit-transform: none !important;
-                    -webkit-backface-visibility: hidden;
-                    -webkit-perspective: 1000;
-                    -webkit-font-smoothing: antialiased;
-                    transition: none !important;
-                    background: transparent !important;
-                    backdrop-filter: none !important;
-                  }
-                  
-                  /* Remove transform for hidden state */
-                  body.header-hidden #mobile-open-now,
-                  body.header-hidden #mobile-main-header {
-                    -webkit-transform: none !important;
-                  }
                 }
               }
-              
-              .content-visibility-auto {
-                content-visibility: auto;
-                contain-intrinsic-size: 1px 5000px;
-              }
-              
-              .optimize-performance {
-                backface-visibility: hidden;
-              }
-              
-              @media (prefers-reduced-motion: reduce) {
-                * {
-                  animation-duration: 0.01ms !important;
-                  animation-iteration-count: 1 !important;
-                  transition-duration: 0.01ms !important;
-                  scroll-behavior: auto !important;
-                }
-              }
-            `
+            `,
           }}
         />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, minimum-scale=1.0, viewport-fit=cover" />

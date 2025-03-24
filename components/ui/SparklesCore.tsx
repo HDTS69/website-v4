@@ -32,16 +32,30 @@ export const SparklesCore = (props: ParticlesProps) => {
   } = props;
   
   const [init, setInit] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const controls = useAnimation();
   const generatedId = useId();
   
   useEffect(() => {
+    // Check if we're on a mobile device
+    setIsMobile(window.innerWidth < 768 || 
+                'ontouchstart' in window || 
+                navigator.maxTouchPoints > 0);
+                
     initParticlesEngine(async (engine) => {
       await loadSlim(engine);
     }).then(() => {
       setInit(true);
       controls.start({ opacity: 1 });
     });
+    
+    // Add resize listener to adjust for orientation changes
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [controls]);
 
   const options = useMemo(() => ({
@@ -54,7 +68,7 @@ export const SparklesCore = (props: ParticlesProps) => {
       enable: false,
       zIndex: 1,
     },
-    fpsLimit: 60,
+    fpsLimit: isMobile ? 30 : 60,
     interactivity: {
       events: {
         onClick: {
@@ -80,22 +94,24 @@ export const SparklesCore = (props: ParticlesProps) => {
           default: "bounce" as const,
         },
         random: true,
-        speed: speed || 2,
+        speed: isMobile ? (speed ? speed * 0.7 : 1.4) : (speed || 2),
         straight: false,
         warp: false,
       },
       number: {
-        value: particleDensity || 80,
+        value: isMobile ? 
+               (particleDensity ? Math.floor(particleDensity * 0.6) : 48) : 
+               (particleDensity || 80),
         density: {
           enable: true,
-          area: 800
+          area: isMobile ? 600 : 800
         }
       },
       opacity: {
         value: { min: 0.3, max: 0.9 },
         animation: {
           enable: true,
-          speed: 0.5,
+          speed: isMobile ? 0.3 : 0.5,
           minimumValue: 0.3
         }
       },
@@ -107,7 +123,7 @@ export const SparklesCore = (props: ParticlesProps) => {
       },
     },
     detectRetina: true,
-  }), [background, minSize, maxSize, speed, particleColor, particleDensity]);
+  }), [background, minSize, maxSize, speed, particleColor, particleDensity, isMobile]);
   
   return (
     <motion.div 

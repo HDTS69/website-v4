@@ -36,18 +36,30 @@ const customButtonStyles = `
     background: white !important;
   }
   
-  /* Make hero buttons the same width */
+  /* Side-by-side buttons styles */
+  .hero-buttons-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+  }
+  
   .hero-buttons-container .animated-book-now-button {
-    min-width: 180px !important;
-    width: 180px !important;
+    flex: 1;
+    max-width: 175px;
+    min-width: 140px !important;
     text-align: center;
     justify-content: center;
     transition: all 0.3s ease !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
   }
   
   .hero-buttons-container .inner {
     justify-content: center;
     width: 100%;
+    white-space: nowrap;
   }
   
   /* Glow effects on hover */
@@ -90,20 +102,20 @@ function BackgroundWrapper({
 // Custom Hero section for emergency plumbing
 function EmergencyHero() {
   return (
-    <BackgroundWrapper className="py-20">
+    <BackgroundWrapper className="relative mt-40 pt-4 sm:pt-20 md:pt-24 lg:pt-28 pb-16">
       <div className="container mx-auto px-4">
         <div className="flex justify-center items-center">
           <div className="max-w-4xl text-center">
             <motion.h1 
-              className="text-4xl md:text-5xl font-bold text-white mb-4 relative inline-block pb-3"
+              className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 relative inline-block tracking-tight leading-tight"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <span className="block">24/7 Emergency Plumbing</span>
-              <span className="block text-[0.7em] mt-1 text-gray-300 font-normal">Fast, Reliable, and Affordable</span>
+              <span className="block mt-4 sm:mt-0">24/7 Emergency Plumbing</span>
+              <span className="block text-[0.7em] mt-2 sm:mt-1 text-gray-300 font-normal">Fast, Reliable, and Affordable</span>
               <motion.div 
-                className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#00E6CA] to-transparent"
+                className="absolute -bottom-3 sm:-bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#00E6CA] to-transparent"
                 initial={{ scaleX: 0, opacity: 0 }}
                 animate={{ 
                   scaleX: 1, 
@@ -124,7 +136,7 @@ function EmergencyHero() {
             </motion.h1>
             
             <motion.p 
-              className="text-lg text-gray-300 mb-4"
+              className="text-base sm:text-lg text-gray-300 mb-6 max-w-2xl mx-auto mt-4 sm:mt-0"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
@@ -136,7 +148,7 @@ function EmergencyHero() {
             
             {/* Google Reviews */}
             <motion.div 
-              className="mb-6"
+              className="mb-8 sm:mb-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.15 }}
@@ -148,7 +160,7 @@ function EmergencyHero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex justify-center gap-4 hero-buttons-container"
+              className="flex flex-row justify-center gap-3 md:gap-4 hero-buttons-container mx-auto max-w-md"
             >
               <AnimatedBookNowButton 
                 href="#book" 
@@ -173,11 +185,11 @@ function EmergencyHero() {
 // Bento Grid Section
 function BentoGridSection() {
   return (
-    <BackgroundWrapper className="py-16">
+    <BackgroundWrapper className="py-12 sm:py-16">
       <div className="container mx-auto px-4">
         <div className="max-w-7xl mx-auto">
           <motion.h2 
-            className="text-3xl md:text-4xl font-bold text-white mb-8 text-center relative inline-block pb-3"
+            className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-6 sm:mb-8 text-center relative inline-block pb-3"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -196,16 +208,16 @@ function BentoGridSection() {
           </motion.h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            {/* Featured Card - Spans 2 columns */}
+            {/* Featured Card - Spans 2 columns on md+ screens */}
             <motion.div 
-              className="md:col-span-2 bg-black/40 backdrop-blur-sm rounded-2xl border border-[#00E6CA]/20 p-8 relative overflow-hidden group hover:border-[#00E6CA]/40 transition-all duration-300"
+              className="md:col-span-2 bg-black/40 backdrop-blur-sm rounded-2xl border border-[#00E6CA]/20 p-5 sm:p-8 relative overflow-hidden group hover:border-[#00E6CA]/40 transition-all duration-300"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
               <div className="relative z-10 flex flex-col h-full">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-2xl font-bold text-white whitespace-nowrap">24/7 Emergency Response</h3>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white">24/7 Emergency Response</h3>
                   <LordIcon 
                     src="/icons/Siren Hover Pinch Icon.json"
                     size={48}
@@ -226,21 +238,21 @@ function BentoGridSection() {
 
             {/* Upfront Pricing Card */}
             <motion.div 
-              className="bg-black/40 backdrop-blur-sm rounded-2xl border border-[#00E6CA]/20 p-6 hover:border-[#00E6CA]/40 transition-all duration-300 relative overflow-hidden group"
+              className="bg-black/40 backdrop-blur-sm rounded-2xl border border-[#00E6CA]/20 p-5 sm:p-6 hover:border-[#00E6CA]/40 transition-all duration-300 relative overflow-hidden group"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
               <div className="relative z-10">
-                <div className="flex justify-center mb-6">
+                <div className="flex justify-center mb-4 sm:mb-6">
                   <LordIcon 
                     src="/icons/Flat Price Tag Icon.json"
-                    size={64}
+                    size={56}
                     trigger="hover"
                   />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3 text-center">Transparent Pricing</h3>
-                <p className="text-gray-300 text-center">No hidden fees or surprises. Get upfront quotes before we start any work.</p>
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3 text-center">Transparent Pricing</h3>
+                <p className="text-gray-300 text-center text-sm sm:text-base">No hidden fees or surprises. Get upfront quotes before we start any work.</p>
               </div>
               <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300">
                 <div className="w-full h-full bg-[#00E6CA] blur-3xl" />
@@ -248,18 +260,18 @@ function BentoGridSection() {
             </motion.div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {/* Common Emergency Issues */}
             <motion.div 
-              className="bg-black/40 backdrop-blur-sm rounded-2xl border border-[#00E6CA]/20 p-6 hover:border-[#00E6CA]/40 transition-all duration-300 group"
+              className="bg-black/40 backdrop-blur-sm rounded-2xl border border-[#00E6CA]/20 p-5 sm:p-6 hover:border-[#00E6CA]/40 transition-all duration-300 group"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <div className="border-b border-[#00E6CA]/20 pb-4 mb-4">
-                <h3 className="text-xl font-bold text-white">Common Emergencies</h3>
+              <div className="border-b border-[#00E6CA]/20 pb-3 sm:pb-4 mb-3 sm:mb-4">
+                <h3 className="text-lg sm:text-xl font-bold text-white">Common Emergencies</h3>
               </div>
-              <ul className="text-gray-300 space-y-3">
+              <ul className="text-gray-300 space-y-2 sm:space-y-3">
                 {[
                   { 
                     icon: (

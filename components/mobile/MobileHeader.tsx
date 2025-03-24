@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { OpenNowIndicator } from '../ui/OpenNowIndicator';
 import { RiveLogo } from '../ui/RiveLogo';
+import { Logo } from '../ui/logo';
 
 export function MobileHeader() {
   const pathname = usePathname();
@@ -14,49 +15,41 @@ export function MobileHeader() {
   const openNowRef = useRef<HTMLDivElement>(null);
   const mainHeaderRef = useRef<HTMLDivElement>(null);
   
-  // State for tracking scroll position and visibility
-  const [prevScrollPos, setPrevScrollPos] = useState(0);
-  const [visible, setVisible] = useState(true);
-  const [atTop, setAtTop] = useState(true);
-  
-  // Critical: Apply fixed positioning using all possible approaches
   useEffect(() => {
-    // Apply positioning that allows header to scroll away normally
-    const fixHeaderPositioning = () => {
+    const setupHeader = () => {
       if (!openNowRef.current || !mainHeaderRef.current) return;
       
       const openNowHeight = openNowRef.current.offsetHeight;
       
-      // 1. Change position from fixed to absolute to allow scrolling away
+      // Set styling for Open Now indicator
       Object.assign(openNowRef.current.style, {
-        position: 'absolute', // Changed from 'fixed' to 'absolute'
+        position: 'absolute',
         top: '0',
         left: '0',
         right: '0',
         width: '100%',
         zIndex: '9999',
-        transition: 'transform 0.3s ease-in-out',
         willChange: 'transform',
         WebkitBackfaceVisibility: 'hidden',
         backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.9))',
         backdropFilter: 'blur(4px)'
       });
       
+      // Set styling for main header
       Object.assign(mainHeaderRef.current.style, {
-        position: 'absolute', // Changed from 'fixed' to 'absolute'
+        position: 'absolute',
         top: `${openNowHeight}px`,
         left: '0',
         right: '0',
         width: '100%',
         zIndex: '9998',
-        transition: 'transform 0.3s ease-in-out, top 0.3s ease-in-out',
         willChange: 'transform',
         WebkitBackfaceVisibility: 'hidden',
         backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0.8))',
         backdropFilter: 'blur(4px)'
       });
       
-      // 2. Add meta viewport tag to prevent iOS Safari scaling issues
+      // Add meta viewport tag for proper mobile rendering
       let viewportMeta = document.querySelector('meta[name="viewport"]');
       if (!viewportMeta) {
         viewportMeta = document.createElement('meta');
@@ -65,40 +58,28 @@ export function MobileHeader() {
       }
       viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover');
       
-      // 3. Remove body classes as we don't need special handling for fixed header
-      document.body.classList.remove('has-fixed-header');
-      document.body.classList.remove('header-hidden');
-      
-      // 4. Calculate actual heights for content padding - but don't apply padding
+      // Calculate header height for CSS variable
       const totalHeaderHeight = openNowHeight + (mainHeaderRef.current?.offsetHeight || 0);
       document.documentElement.style.setProperty(
         '--mobile-header-height', 
         `${totalHeaderHeight}px`
       );
-      
-      // 5. Remove padding from body - let header scroll normally
-      document.body.style.paddingTop = '0px';
     };
     
-    // Remove scroll handling as we want header to scroll away normally
-    
     // Run immediately
-    fixHeaderPositioning();
+    setupHeader();
     
     // Run on resize and orientation change
-    window.addEventListener('resize', fixHeaderPositioning, { passive: true });
-    window.addEventListener('orientationchange', fixHeaderPositioning);
+    window.addEventListener('resize', setupHeader, { passive: true });
+    window.addEventListener('orientationchange', setupHeader);
     
-    // Check again after a short delay to catch any post-render layout shifts
-    const timer1 = setTimeout(fixHeaderPositioning, 100);
-    const timer2 = setTimeout(fixHeaderPositioning, 1000);
+    // Check again after short delays
+    const timer1 = setTimeout(setupHeader, 100);
+    const timer2 = setTimeout(setupHeader, 1000);
     
     return () => {
-      window.removeEventListener('resize', fixHeaderPositioning);
-      window.removeEventListener('orientationchange', fixHeaderPositioning);
-      document.body.classList.remove('has-fixed-header');
-      document.body.classList.remove('header-hidden');
-      document.body.style.paddingTop = '0px';
+      window.removeEventListener('resize', setupHeader);
+      window.removeEventListener('orientationchange', setupHeader);
       clearTimeout(timer1);
       clearTimeout(timer2);
     };
@@ -119,12 +100,12 @@ export function MobileHeader() {
             <Image
               src="/images/text-logo.webp"
               alt="HD Trade Services"
-              width={720}
-              height={156}
+              width={600}
+              height={130}
               style={{ objectFit: 'contain' }}
               priority
-              className="max-h-[156px] w-auto"
-              sizes="720px"
+              className="max-h-[130px] w-auto"
+              sizes="600px"
             />
           </div>
         </div>
@@ -167,7 +148,7 @@ export function MobileHeader() {
       <div 
         ref={openNowRef}
         id="mobile-open-now"
-        className="backdrop-blur-sm py-1 px-4 md:hidden"
+        className="md:hidden shadow-md"
         style={{ 
           paddingTop: 'env(safe-area-inset-top)',
           position: 'absolute',
@@ -180,7 +161,7 @@ export function MobileHeader() {
           backdropFilter: 'blur(4px)'
         }}
       >
-        <div className="flex justify-center items-center w-full">
+        <div className="flex justify-center items-center w-full py-1 px-4">
           <OpenNowIndicator 
             showTime={false}
             className="text-sm font-medium" 
@@ -192,7 +173,7 @@ export function MobileHeader() {
       <header 
         ref={mainHeaderRef}
         id="mobile-main-header"
-        className="backdrop-blur-sm md:hidden"
+        className="md:hidden shadow-md"
         style={{ 
           position: 'absolute',
           top: openNowRef.current ? openNowRef.current.offsetHeight + 'px' : '24px',
@@ -204,7 +185,7 @@ export function MobileHeader() {
           backdropFilter: 'blur(4px)'
         }}
       >
-        <div className="py-2">
+        <div className="py-3">
           <LogoButton />
         </div>
       </header>

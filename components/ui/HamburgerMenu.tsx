@@ -182,7 +182,7 @@ function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                 onClick={onClose}
                 className="w-full"
               >
-                Book Now
+                Book Online
               </AnimatedBookNowButton>
             </div>
           </div>

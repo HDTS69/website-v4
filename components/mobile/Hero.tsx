@@ -9,12 +9,14 @@ import { HeroBookingForm } from './HeroBookingForm';
 
 export function Hero() {
   const [showBookingForm, setShowBookingForm] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
     <div 
-      className="relative min-h-[100dvh] flex flex-col bg-black overflow-x-hidden overflow-y-auto pb-20 touch-auto"
+      className="relative min-h-[100dvh] flex flex-col bg-black overflow-x-hidden overscroll-none pb-20 touch-auto"
       style={{ 
-        paddingTop: '150px' // Slightly reduced to better match desktop spacing
+        paddingTop: '150px', // Slightly reduced to better match desktop spacing
+        overscrollBehavior: 'none' // Prevent bounce/rubber-band effect
       }}
     >
       {/* Sparkles Animation */}
@@ -23,56 +25,34 @@ export function Hero() {
           background="transparent"
           minSize={0.6}
           maxSize={1.5}
-          particleDensity={120}
+          particleDensity={80}
           className="w-full h-full"
           particleColor="#00E6CA"
-          speed={0.4}
+          speed={0.3}
         />
       </div>
 
-      {/* Hero Images Container */}
-      <div className="absolute inset-0 bottom-0 z-[3] transform-gpu pointer-events-none">
-        <div className="relative h-full w-full">
-          {/* Main Hero Image */}
-          <AnimatePresence mode="wait">
-            <motion.div 
-              className="absolute bottom-0 left-0 w-[60%] h-[70%]"
-              initial={{ y: '100vh', opacity: 0 }}
-              animate={{ 
-                y: 0,
-                opacity: 1,
-                transition: {
-                  type: "spring",
-                  damping: 20,
-                  mass: 0.75,
-                  stiffness: 100,
-                  delay: 0.2
-                }
-              }}
-              key="hero-image"
-            >
-              <div className="relative w-full h-full">
-                <Image
-                  src="/images/hayden-hero-1.webp"
-                  alt="Professional Technician"
-                  fill
-                  sizes="60vw"
-                  style={{ 
-                    objectFit: 'contain', 
-                    objectPosition: 'left bottom',
-                    filter: 'drop-shadow(0 0 10px rgba(0,230,202,0.15))'
-                  }}
-                  className="select-none optimize-performance"
-                  priority
-                  draggable="false"
-                />
-              </div>
-            </motion.div>
-          </AnimatePresence>
-          
-          {/* Bottom fade gradient */}
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent transform-gpu" />
+      {/* Hero Images Container - Simplified */}
+      <div className="absolute bottom-0 left-0 z-[3] w-[60%] h-[70%] pointer-events-none will-change-transform" style={{ transform: 'translateZ(0)' }}>
+        <div className="relative w-full h-full">
+          <Image
+            src="/images/hayden-hero-fixed.webp"
+            alt="Professional Technician"
+            fill
+            sizes="60vw"
+            style={{ 
+              objectFit: 'contain', 
+              objectPosition: 'left bottom',
+              filter: 'drop-shadow(0 0 10px rgba(0,230,202,0.15))'
+            }}
+            className="select-none"
+            priority
+            draggable="false"
+            onLoad={() => setImageLoaded(true)}
+          />
         </div>
+        {/* Bottom fade gradient */}
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent" />
       </div>
 
       {/* Content Container */}
@@ -82,34 +62,37 @@ export function Hero() {
           <div className="flex flex-col items-center max-w-[100%] text-center mb-6">
             {/* Main Headline */}
             <div className="mb-4">
-              <h1 className="text-[2.5rem] font-bold text-white tracking-tight leading-tight mb-4">
-                <span className="block mb-2 opacity-0 animate-fade-in-up animation-delay-300">
+              <h1 className="text-[2.5rem] font-bold text-white tracking-tight leading-tight mb-4 will-change-transform">
+                <span className="block mb-2 opacity-0 animate-mobile-fade-up animation-delay-300">
                   Brisbane
                 </span>
-                <span className="inline-block mb-2 text-[#00E6CA] opacity-0 animate-fade-in-up animation-delay-400">
+                <span className="inline-block mb-2 text-[#00E6CA] opacity-0 animate-mobile-fade-up animation-delay-400">
                   24/7 Emergency Repairs
                 </span>
-                <span className="block opacity-0 animate-fade-in-up animation-delay-500">
+                <span className="block opacity-0 animate-mobile-fade-up animation-delay-500">
                   & Installations
                 </span>
               </h1>
               
-              <p className="text-lg text-gray-300 mb-2 leading-relaxed font-medium opacity-0 animate-fade-in-up animation-delay-600 max-w-md mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
+              <p className="text-lg text-gray-300 mb-2 leading-relaxed font-medium opacity-0 animate-mobile-fade-up animation-delay-600 max-w-md mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
                 Professional plumbing, gas, roofing & air conditioning services.
               </p>
 
-              <p className="text-lg text-gray-300 mb-4 leading-relaxed font-medium opacity-0 animate-fade-in-up animation-delay-650 max-w-md mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
+              <p className="text-lg text-gray-300 mb-4 leading-relaxed font-medium opacity-0 animate-mobile-fade-up animation-delay-650 max-w-md mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
                 Fast response. Fair pricing. Guaranteed satisfaction.
               </p>
             </div>
 
             {/* Star Review Component */}
             <div 
-              className="px-6 py-3 bg-black/60 backdrop-blur-sm rounded-lg mb-8 transform-gpu opacity-0 animate-scale-up animation-delay-700 max-w-sm cursor-pointer hover:bg-black/70 transition-colors"
+              className="px-6 py-3 rounded-lg mb-8 transform-gpu opacity-0 animate-mobile-scale animation-delay-700 max-w-sm cursor-pointer hover:bg-black/10 transition-colors"
               onClick={() => {
                 const reviewsSection = document.getElementById('testimonials');
                 if (reviewsSection) {
-                  reviewsSection.scrollIntoView({ behavior: 'smooth' });
+                  reviewsSection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                  });
                 }
               }}
               role="button"
@@ -118,7 +101,10 @@ export function Hero() {
                 if (e.key === 'Enter' || e.key === ' ') {
                   const reviewsSection = document.getElementById('testimonials');
                   if (reviewsSection) {
-                    reviewsSection.scrollIntoView({ behavior: 'smooth' });
+                    reviewsSection.scrollIntoView({ 
+                      behavior: 'smooth',
+                      block: 'start'
+                    });
                   }
                 }
               }}
@@ -147,19 +133,22 @@ export function Hero() {
 
             {/* Book Now Button */}
             {!showBookingForm && (
-              <div className="w-full max-w-[200px] mx-auto opacity-0 animate-fade-in-up animation-delay-750">
+              <div className="w-full max-w-[200px] mx-auto opacity-0 animate-mobile-fade-up animation-delay-750">
                 <AnimatedButton
                   href="#book"
                   onClick={(e) => {
                     e.preventDefault();
                     const bookingForm = document.getElementById('book');
                     if (bookingForm) {
-                      bookingForm.scrollIntoView({ behavior: 'smooth' });
+                      bookingForm.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                      });
                     }
                   }}
                   className="w-full justify-center text-base font-medium py-3 shadow-lg shadow-cyan-900/20"
                 >
-                  Book Now
+                  Book Online
                 </AnimatedButton>
               </div>
             )}

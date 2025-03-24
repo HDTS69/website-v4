@@ -67,7 +67,7 @@ export function Hero() {
             >
               <div className="relative w-full h-full">
                 <Image
-                  src="/images/hayden-hero-1.webp"
+                  src="/images/hayden-hero-fixed.webp"
                   alt="Professional Technician"
                   fill
                   sizes="(max-width: 768px) 100vw, 35vw"

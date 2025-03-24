@@ -13,13 +13,7 @@ export default function Document() {
           type="application/wasm" 
         />
         
-        {/* Preload the hero image */}
-        <link
-          rel="preload"
-          href="/images/hayden-hero-1.webp"
-          as="image"
-          type="image/webp"
-        />
+        {/* Note: Hero image is prioritized by Next.js Image component instead of preload */}
       </Head>
       <body>
         <Main />
